@@ -14,7 +14,7 @@ router.post("/SaveUserRegister", (req, res, next) => {
     var repass= salt +''+req.body.password;
     var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
     console.log(encPassword);
-        db.executeSql("INSERT INTO `user`(`firstname`,`middlename`,`lastname`,`email`,`password`,`dateofbirth`,`contactnumber`,`isactive`,`createddate`)VALUES('" + req.body.firstname + "','" + req.body.middlename + "','" + req.body.lastname + "','" + req.body.email + "','"+encPassword+"',null," + req.body.contactnumber + "," + req.body.isactive + ",CURRENT_TIMESTAMP);", function (data, err) {
+        db.executeSql("INSERT INTO `user`(`firstname`,`lastname`,`email`,`password`,`dateofbirth`,`contactnumber`,`isactive`,`createddate`)VALUES('" + req.body.fname + "','" + req.body.lname + "','" + req.body.email + "','"+encPassword+"',null," + req.body.contact + "," + req.body.isactive + ",CURRENT_TIMESTAMP);", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             }

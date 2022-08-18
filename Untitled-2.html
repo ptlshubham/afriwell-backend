@@ -1,0 +1,49 @@
+<div class="commerce-buttons" fxLayout="row" fxLayoutAlign="end center">
+
+  <button mat-button class="flex-row-button mat-button" fxLayoutAlign="space-between center" [matMenuTriggerFor]="menu">
+    <div class="mat-button-wrapper">
+      <div class="">
+        <mat-icon class="mat-icon-lg mat-icon material-icons">local_grocery_store</mat-icon>
+        <span class="cart-count-wrapper">{{shoppingCartsItems.length}}</span>
+      </div>
+      <div class="top-cart">
+        <span>{{ carttotal }}</span>
+      </div>
+    </div>
+  </button>
+  <mat-menu class="spCard-main" #menu="matMenu">
+    <div class="spCard-dropdown">
+      <div class="card-list-title" fxLayout="row" fxLayoutAlign="space-between start">
+        <!-- <a [routerLink]="['/pages/cart']" routerLinkActive="router-link-active">
+          <p>CHECK CARD</p>
+        </a> -->
+        <p>{{shoppingCartsItems.length}} ITEM</p>
+      </div>
+      <mat-divider></mat-divider>
+      <p class="woo-message" *ngIf="!shoppingCartsItems.length">Please add product
+      <p>
+
+      <div class="new-product" fxLayout="column" *ngIf="shoppingCartsItems.length">
+        <div class="item" fxLayout="row" fxLayoutAlign="start start" *ngFor="let item of shoppingCartsItems">
+          <div class="product">
+            <img src="http://localhost:8090{{item.productMainImage}}" alt="">
+          </div>
+          <div class="desc">
+            <p>{{item.productName}}</p>
+            <span>{{item.quantity}} X {{item.productPrice}}</span>
+          </div>
+          <div class="close-circle">
+            <a (click)="removeItem(item.id)"><i class="material-icons">
+                delete
+              </i></a>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="total" fxLayout="row" fxLayoutAlign="space-between center">
+          <p class="text-muted">Subtotal: </p>
+          <span>{{ carttotal }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-menu>
+</div>
