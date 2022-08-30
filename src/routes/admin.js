@@ -129,7 +129,8 @@ router.get("/GetMainCategory/:id", (req, res, next) => {
     });
 });
 router.post("/UpdateMainCategory", (req, res, next) => {
-    db.executeSql("UPDATE `ecommerce`.`category` SET name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
+    console.log(req.body.bannersimage)
+    db.executeSql("UPDATE `category` SET name='" + req.body.name + "',bannersimage='" + req.body.bannersimage + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -377,7 +378,7 @@ router.post("/getProductDetailImage", (req, res, next) => {
 })
 router.post("/SaveWebBanners", (req, res, next) => {
     console.log(req.body);
-    db.executeSql("INSERT INTO `webbanners`(`name`,`bannersimage`,`status`)VALUES('" + req.body.name + "','" + req.body.bannersimage + "'," + req.body.status + ");", function (data, err) {
+    db.executeSql("INSERT INTO `webbanners`(`name`,`bannersimage`,`status`,`title`,`subtitle`)VALUES('" + req.body.name + "','" + req.body.bannersimage + "'," + req.body.status + ",'" + req.body.title + "','" + req.body.subtitle + "');", function (data, err) {
         if (err) {
             res.json("error");
         } else {
@@ -598,6 +599,7 @@ router.get("/RemoveRecentUoloadImage", (req, res, next) => {
     });
 })
 router.post("/UploadCategoryBannersImage", (req, res, next) => {
+    console.log(req.body)
     var imgname = generateUUID();
 
     const storage = multer.diskStorage({

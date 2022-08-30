@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 17, 2022 at 11:20 AM
+-- Generation Time: Aug 30, 2022 at 11:27 AM
 -- Server version: 10.4.24-MariaDB
--- PHP Version: 8.0.19
+-- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -119,10 +119,10 @@ CREATE TABLE `category` (
 --
 
 INSERT INTO `category` (`id`, `name`, `parent`, `bannersimage`, `createddate`, `updateddate`, `isactive`) VALUES
-(137, 'Mens', 0, NULL, '2021-05-11 17:23:09', '2021-05-11 17:23:09', 1),
-(138, 'Womens', 0, NULL, '2021-05-11 17:23:32', '2021-05-11 17:23:32', 1),
-(139, 'Baby Kids', 0, NULL, '2021-05-11 17:23:56', '2021-05-11 17:23:56', 1),
-(140, 'Home Furniture', 0, NULL, '2021-05-11 17:24:12', '2021-05-11 17:24:12', 1),
+(137, 'Mens', 0, '/images/categorybanners/5ba5621f-f233-42ac-8de4.png', '2021-05-11 17:23:09', '2022-08-27 12:56:50', 1),
+(138, 'Womens', 0, '/images/categorybanners/a7c5987e-1c54-497a-aa8c.png', '2021-05-11 17:23:32', '2022-08-27 12:57:00', 1),
+(139, 'Baby Kids', 0, '/images/categorybanners/d39ce0f2-b437-46c7-bbfc.png', '2021-05-11 17:23:56', '2022-08-27 12:57:11', 1),
+(140, 'Home Furniture', 0, '/images/categorybanners/4d83cc42-8bba-4752-ac8b.png', '2021-05-11 17:24:12', '2022-08-27 12:57:20', 1),
 (141, 'Top Wear', 137, '/images/categorybanners/99281e8b-6cb2-4766-965e.png', '2021-05-11 17:24:31', '2021-06-11 11:25:58', 1),
 (142, 'Bottom Wear', 137, NULL, '2021-05-11 17:24:51', '2021-05-11 17:24:51', 1),
 (143, 'Winter Wear', 137, NULL, '2021-05-11 17:25:01', '2021-05-11 17:25:01', 1),
@@ -172,7 +172,14 @@ INSERT INTO `category` (`id`, `name`, `parent`, `bannersimage`, `createddate`, `
 (195, 'Sports Wear', 137, '0', '2021-06-08 14:34:40', '2021-06-08 14:39:02', 0),
 (196, 'Sports Wear', 137, '0', '2021-06-08 14:36:07', '2021-06-08 14:39:07', 0),
 (197, 'Sports Wear', 137, '0', '2021-06-08 14:37:05', '2021-06-08 14:39:11', 0),
-(198, 'Sports Wear', 137, '/images/categorybanners/a841e68e-fd0e-41e9-ae6e.png', '2021-06-08 14:38:16', '2021-06-08 14:38:16', 1);
+(198, 'Sports Wear', 137, '/images/categorybanners/a841e68e-fd0e-41e9-ae6e.png', '2021-06-08 14:38:16', '2021-06-08 14:38:16', 1),
+(199, 'Shubham Patel', 0, 'undefined', '2022-08-27 11:34:20', '2022-08-27 11:35:51', 0),
+(200, 'Mens test', 0, '/images/categorybanners/46230e51-65d9-4863-87c0.jpg', '2022-08-27 11:36:18', '2022-08-27 11:36:29', 0),
+(201, 'Engine Oil', 0, '/images/categorybanners/76b631e9-4c82-4946-a340.png', '2022-08-27 12:54:18', '2022-08-27 12:54:18', 1),
+(202, 'Engine Grease', 0, '/images/categorybanners/9fef515d-9599-46ea-904f.png', '2022-08-27 12:55:03', '2022-08-27 12:55:03', 1),
+(203, 'cpvc', 0, '/images/categorybanners/3d1e6e04-c84a-473d-95b3.png', '2022-08-27 12:55:32', '2022-08-27 12:55:32', 1),
+(204, 'paints', 0, '/images/categorybanners/0a320c70-4884-4836-b01e.png', '2022-08-27 12:55:46', '2022-08-27 12:55:46', 1),
+(205, 'pumps', 0, '/images/categorybanners/6086ee98-85c0-40ba-a2c5.png', '2022-08-27 12:56:03', '2022-08-27 12:56:03', 1);
 
 -- --------------------------------------------------------
 
@@ -262,7 +269,6 @@ CREATE TABLE `images` (
 INSERT INTO `images` (`id`, `productid`, `mainCategoryId`, `categoryId`, `subCategoryId`, `productListImage`, `createdDate`) VALUES
 (27, 20, 74, 77, 84, '/images/products/bf4842f2-639f-46ca-a1b0.jpeg', '2021-04-14 17:02:27'),
 (28, 20, 74, 77, 84, '/images/products/2a43c7e9-8d9a-443b-8f36.jpeg', '2021-04-14 17:05:59'),
-(29, 20, 74, 78, 88, '/images/products/e452b7d0-7971-43ea-ae57.jpeg', '2021-04-14 17:16:18'),
 (31, 20, 74, 77, 84, '/images/products//images/products/f806d349-6886-4979-8491.jfif', '2021-04-22 12:28:36'),
 (32, 28, 134, 135, NULL, '/images/products/eeb64ae2-dbab-4be5-bf2a.png', '2021-05-11 17:17:32'),
 (33, 29, 138, 145, 158, '/images/products/906d69e7-df2f-4ecf-ab2a.jpeg', '2021-05-11 17:44:05'),
@@ -779,9 +785,9 @@ INSERT INTO `images` (`id`, `productid`, `mainCategoryId`, `categoryId`, `subCat
 (552, 40, 138, 145, 161, '/images/products/820f2e13-e488-4f40-b7ca.jpeg', '2021-05-11 18:10:48'),
 (553, 40, 138, 145, 161, '/images/products/1fdaf3ed-5c20-4758-af1e.jpeg', '2021-05-11 18:10:48'),
 (554, 40, 138, 145, 161, '/images/products/ca12e41e-447b-43c0-a319.jpeg', '2021-05-11 18:10:48'),
-(555, 40, 138, 145, 161, '/images/products/d39c0df4-d974-4cf9-b0ba.jpeg', '2021-05-11 18:10:48');
+(555, 40, 138, 145, 161, '/images/products/d39c0df4-d974-4cf9-b0ba.jpeg', '2021-05-11 18:10:48'),
+(556, 40, 138, 145, 161, '/images/products/247b0078-f8b5-4844-b6fd.jpeg', '2021-05-11 18:10:48');
 INSERT INTO `images` (`id`, `productid`, `mainCategoryId`, `categoryId`, `subCategoryId`, `productListImage`, `createdDate`) VALUES
-(556, 40, 138, 145, 161, '/images/products/247b0078-f8b5-4844-b6fd.jpeg', '2021-05-11 18:10:48'),
 (557, 40, 138, 145, 161, '/images/products/d181b999-ed96-4291-9250.jpeg', '2021-05-11 18:10:48'),
 (558, 40, 138, 145, 161, '/images/products/600f83dd-067e-4452-8ec3.jpeg', '2021-05-11 18:10:48'),
 (559, 40, 138, 145, 161, '/images/products/6dc07f7d-be45-4163-903e.jpeg', '2021-05-11 18:10:48'),
@@ -1294,9 +1300,9 @@ INSERT INTO `images` (`id`, `productid`, `mainCategoryId`, `categoryId`, `subCat
 (1066, 59, 138, 149, NULL, '/images/products/4c4f2be7-5d0f-4de6-bf4c.jpeg', '2021-05-11 19:02:28'),
 (1067, 59, 138, 149, NULL, '/images/products/332d5707-d82f-4d66-b79e.jpeg', '2021-05-11 19:02:28'),
 (1068, 59, 138, 149, NULL, '/images/products/5947bcf6-1031-485d-b816.jpeg', '2021-05-11 19:02:28'),
-(1069, 59, 138, 149, NULL, '/images/products/1375e80d-92a6-44a8-bc58.jpeg', '2021-05-11 19:02:28');
+(1069, 59, 138, 149, NULL, '/images/products/1375e80d-92a6-44a8-bc58.jpeg', '2021-05-11 19:02:28'),
+(1070, 60, 138, 149, NULL, '/images/products/c663598b-f31a-4611-8243.jpeg', '2021-05-11 19:04:18');
 INSERT INTO `images` (`id`, `productid`, `mainCategoryId`, `categoryId`, `subCategoryId`, `productListImage`, `createdDate`) VALUES
-(1070, 60, 138, 149, NULL, '/images/products/c663598b-f31a-4611-8243.jpeg', '2021-05-11 19:04:18'),
 (1071, 60, 138, 149, NULL, '/images/products/5911b921-0f24-48c4-a034.jpeg', '2021-05-11 19:04:18'),
 (1072, 60, 138, 149, NULL, '/images/products/90637dd7-a1a0-4852-a312.jpeg', '2021-05-11 19:04:18'),
 (1073, 60, 138, 149, NULL, '/images/products/6302fdc5-ef2b-45a0-b46c.jpeg', '2021-05-11 19:04:18'),
@@ -1806,9 +1812,9 @@ INSERT INTO `images` (`id`, `productid`, `mainCategoryId`, `categoryId`, `subCat
 (1577, 94, 139, 153, 172, '/images/products/5ad0b0f1-0115-46ed-ba7a.jpeg', '2021-05-11 21:40:51'),
 (1578, 94, 139, 153, 172, '/images/products/2244103e-96a9-4b52-bc36.jpeg', '2021-05-11 21:40:51'),
 (1579, 95, 139, 153, 172, '/images/products/188a0773-0d33-4152-b8b2.jpeg', '2021-05-11 21:43:02'),
-(1580, 95, 139, 153, 172, '/images/products/7342c5ec-0f91-4ebe-8e9a.jpeg', '2021-05-11 21:43:02');
+(1580, 95, 139, 153, 172, '/images/products/7342c5ec-0f91-4ebe-8e9a.jpeg', '2021-05-11 21:43:02'),
+(1581, 95, 139, 153, 172, '/images/products/18249e11-0977-4041-89ae.jpeg', '2021-05-11 21:43:02');
 INSERT INTO `images` (`id`, `productid`, `mainCategoryId`, `categoryId`, `subCategoryId`, `productListImage`, `createdDate`) VALUES
-(1581, 95, 139, 153, 172, '/images/products/18249e11-0977-4041-89ae.jpeg', '2021-05-11 21:43:02'),
 (1582, 95, 139, 153, 172, '/images/products/da5e9ac2-5385-4804-af17.jpeg', '2021-05-11 21:43:03'),
 (1583, 95, 139, 153, 172, '/images/products/b963e8c3-c924-4cd3-8036.jpeg', '2021-05-11 21:43:03'),
 (1584, 95, 139, 153, 172, '/images/products/6b42f842-83fb-4f12-ab32.jpeg', '2021-05-11 21:43:03'),
@@ -2322,9 +2328,9 @@ INSERT INTO `images` (`id`, `productid`, `mainCategoryId`, `categoryId`, `subCat
 (2092, 133, 137, 144, 181, '/images/products/0a968034-3224-4e80-83dd.jpeg', '2021-05-12 02:37:06'),
 (2093, 133, 137, 144, 181, '/images/products/2b5532e7-dd86-4246-b53b.jpeg', '2021-05-12 02:37:06'),
 (2094, 133, 137, 144, 181, '/images/products/73c3ebab-9ba0-4077-b350.jpeg', '2021-05-12 02:37:06'),
-(2095, 133, 137, 144, 181, '/images/products/6b316c9f-0584-4772-9ff6.jpeg', '2021-05-12 02:37:06');
+(2095, 133, 137, 144, 181, '/images/products/6b316c9f-0584-4772-9ff6.jpeg', '2021-05-12 02:37:06'),
+(2096, 133, 137, 144, 181, '/images/products/37e697fd-2fd4-415b-aa24.jpeg', '2021-05-12 02:37:06');
 INSERT INTO `images` (`id`, `productid`, `mainCategoryId`, `categoryId`, `subCategoryId`, `productListImage`, `createdDate`) VALUES
-(2096, 133, 137, 144, 181, '/images/products/37e697fd-2fd4-415b-aa24.jpeg', '2021-05-12 02:37:06'),
 (2097, 133, 137, 144, 181, '/images/products/6f96a943-335c-4b64-aaea.jpeg', '2021-05-12 02:37:06'),
 (2098, 133, 137, 144, 181, '/images/products/14b5e0e2-5d13-4ab2-8823.jpeg', '2021-05-12 02:37:06'),
 (2099, 133, 137, 144, 181, '/images/products/770d398f-7b02-47c5-83b6.jpeg', '2021-05-12 02:37:06'),
@@ -2447,7 +2453,8 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `username`, `userid`, `addressid`, `productid`, `quantity`, `size`, `transactionid`, `parentid`, `modofpayment`, `total`, `status`, `orderdate`, `deliverydate`, `createddate`, `updateddate`) VALUES
-(3, 'Shubham Patel', 1, 12, 135, '1', '', NULL, 0, NULL, NULL, 'Pending', '2022-08-17', '2022-08-17', '2022-08-17', '2022-08-17 13:33:21');
+(6, 'Shubham Patel', 1, 1, 30, '1', 'undefined', NULL, 0, NULL, NULL, 'Processing', '2022-08-18', '2022-08-18', '2022-08-18', '2022-08-18 15:44:51'),
+(7, 'Shubham Patel', 1, 1, 30, '1', 'undefined', NULL, 0, NULL, NULL, 'Cancelled', '2022-08-18', '2022-08-18', '2022-08-18', '2022-08-18 15:47:24');
 
 -- --------------------------------------------------------
 
@@ -2489,11 +2496,9 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `productName`, `brandName`, `manufacturerName`, `productCode`, `startRating`, `productSRNumber`, `productPrice`, `discountPrice`, `emiOptions`, `avibilityStatus`, `descripition`, `relatedProduct`, `productSize`, `itemWeight`, `isActive`, `mainCategory`, `category`, `subCategory`, `productMainImage`, `createddate`, `updateddate`, `isNewArrival`, `isBestProduct`, `isHot`, `isOnSale`) VALUES
-(29, 'Embellished Paithani Pure Silk Saree', 'SAARA', 'Checkered Paisley', '301', 1, 'A201', 2670, 2500, 1, 1, 'Beautiful saree...perfect color in love with this saree', 1, '22', '300', 0, 138, 145, 158, '/images/products/1d92b825-641e-465d-a729.jpeg', '2021-05-11 17:44:05', NULL, 0, 0, 0, 1),
-(30, 'Floral Print Bollywood Georgette', 'SAARA', 'Chiffon Saree', '302', 1, 'A202', 899, 0, 0, 1, 'Saree Length: 5.5 Mtr, Saree Blouse Length: 0.8 Mtr', 1, '12', '300', 0, 138, 145, 158, '/images/products/df607847-b07f-4bde-bb51.jpeg', '2021-05-11 17:47:23', NULL, 0, 0, 0, 1),
-(31, 'Floral Print Daily Georgette', 'Anand ', 'Chiffon Saree', '303', 1, 'A203', 299, 0, 0, 1, 'Saree Length: 5.5 Mtr', 1, '12', '250', 0, 138, 145, 158, '/images/products/11049085-a8e9-4773-90e1.jpeg', '2021-05-11 17:49:03', NULL, 0, 0, 0, 1),
-(32, 'Self Design Semi Stitched Lehenga Choli', 'Shethupathi Clothing ', 'shethupathi', '304', 1, 'A204', 1329, 1100, 0, 1, 'Best Product', 1, '12', '500', 0, 138, 145, 159, '/images/products/2e961872-15ad-45ea-acad.jpeg', '2021-05-11 17:53:02', NULL, 0, 0, 0, 0),
-(33, 'Embroidered Semi Stitched Lehenga Choli ', 'Pink She', 'shethupathi', '305', 1, 'A205', 699, 0, 0, 1, 'Best Product', 1, '12', '500', 0, 138, 145, 159, '/images/products/86d1bc39-1fbb-4001-a877.jpeg', '2021-05-11 17:54:27', NULL, 1, 0, 0, 0),
+(31, 'Floral Print Daily Georgette', 'Anand ', 'Chiffon Saree', '303', 1, 'A203', 299, 0, 0, 1, 'Saree Length: 5.5 Mtr', 1, '12', '250', 0, 138, 145, 158, '/images/products/11049085-a8e9-4773-90e1.jpeg', '2021-05-11 17:49:03', NULL, 1, 0, 0, 0),
+(32, 'Self Design Semi Stitched Lehenga Choli', 'Shethupathi Clothing ', 'shethupathi', '304', 1, 'A204', 1329, 1100, 0, 1, 'Best Product', 1, '12', '500', 0, 138, 145, 159, '/images/products/2e961872-15ad-45ea-acad.jpeg', '2021-05-11 17:53:02', NULL, 1, 0, 0, 0),
+(33, 'Embroidered Semi Stitched Lehenga Choli ', 'Pink She', 'shethupathi', '305', 1, 'A205', 699, 0, 0, 1, 'Best Product', 1, '12', '500', 0, 138, 145, 159, '/images/products/86d1bc39-1fbb-4001-a877.jpeg', '2021-05-11 17:54:27', NULL, 0, 0, 1, 0),
 (34, 'Embroidered Semi Stitched Lehenga Choli', 'panchhi nx', 'shethupathi', '306', 1, 'A206', 799, 0, 0, 1, 'Best Product', 1, '12', '700', 0, 138, 145, 159, '/images/products/2f0c0ae8-5575-4903-852f.jpeg', '2021-05-11 17:55:53', NULL, 0, 0, 0, 1),
 (35, 'Crepe Printed Salwar Suit Material', 'PINK WISH ', 'shethupathi', '307', 1, 'A207', 499, 0, 1, 1, 'This product is deteriorating old,\nmaterial', 1, '12', '700', 0, 138, 145, 160, '/images/products/535edb59-afa1-4332-a124.jpeg', '2021-05-11 17:58:31', NULL, 0, 0, 0, 1),
 (36, 'Printed Salwar Suit Material', 'SAARA ', 'shethupathi', '307', 1, 'A207', 449, 0, 1, 1, 'This product is deteriorating old,\nmaterial', 1, '12', '700', 0, 138, 145, 160, '/images/products/20b1c905-e72d-4143-98d7.jpeg', '2021-05-11 18:00:07', NULL, 0, 0, 0, 1),
@@ -2589,7 +2594,7 @@ INSERT INTO `product` (`id`, `productName`, `brandName`, `manufacturerName`, `pr
 (134, 'VASTRAMAY Men Dhoti', 'PETER ENGLAND ', 'PARALLEL TIMES ', '398', 1, 'A398', 1099, 0, 0, 1, 'Best Product For Traditional Occassion.', 1, '10', '300', 0, 137, 144, 181, '/images/products/04d55412-0599-40be-a5cb.jpeg', '2021-05-12 02:38:29', NULL, 0, 0, 0, 0),
 (135, 'Ethnic Dhoti Pant for festival', 'Festive', 'PARALLEL TIMES ', '399', 1, 'A399', 599, 0, 0, 1, 'Best Product For Traditional Occasion.', 1, '10', '300', 0, 137, 144, 181, '/images/products/d208c29c-a80a-4b14-9e0d.jpeg', '2021-05-12 02:39:52', NULL, 0, 0, 0, 0),
 (136, 'Honey Fashion Solid Men Dhoti', 'Festive', 'PARALLEL TIMES ', '400', 1, 'A400', 1099, 0, 0, 1, 'Best Product For Traditional Occasion.', 1, '10', '300', 0, 137, 144, 181, '/images/products/2bd346a9-1516-4990-9048.jpeg', '2021-05-12 02:40:43', NULL, 0, 0, 0, 0),
-(137, 'demo', 'demo', 'prnv', '1', 1, '009', 800, 20, 1, 1, 'bjhjhhhhjjhjh', 1, 'larde', '200', 0, 137, 141, 178, '/images/products/d18b62ca-a6f3-4562-b3e9.png', '2021-06-10 13:48:39', NULL, 0, 0, 0, 0);
+(137, 'demo', 'demo', 'prnv', '1', 1, '009', 800, 20, 1, 1, 'bjhjhhhhjjhjh', 1, 'larde', '200', 0, 137, 141, 178, '/images/products/d18b62ca-a6f3-4562-b3e9.png', '2021-06-10 13:48:39', NULL, 0, 0, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -2639,8 +2644,6 @@ INSERT INTO `quantitywithsize` (`id`, `productid`, `quantity`, `size`, `color`, 
 (26, '31', '50', '\r\nXXL', '', '0', '2021-05-11'),
 (27, '32', '5', 'S', '', '0', '2021-05-11'),
 (28, '32', '10', 'M', '', '0', '2021-05-11'),
-(29, '32', '50', '\r\nXXL', '', '0', '2021-05-11'),
-(30, '33', '50', ' XXL', '', '0', '2021-05-11'),
 (31, '34', '10', ' XXL', '', '0', '2021-05-11'),
 (32, '35', '100', '\r\nXXL', '', '0', '2021-05-11'),
 (33, '36', '100', 'XS', '', '0', '2021-05-11'),
@@ -2942,7 +2945,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `dateofbirth`, `contactnumber`, `isactive`, `createddate`, `updateddate`) VALUES
-(1, 'Shubham', NULL, 'Patel', 'ptlshubham@gmail.com', '22b596cc89584ab9a7a82ebf015ab43b763dc7b6', NULL, 8141952604, 1, '2022-08-08 14:51:44', NULL),
+(1, 'Shubham ', NULL, 'Patel', 'ptlshubham@gmail.com', '22b596cc89584ab9a7a82ebf015ab43b763dc7b6', NULL, 0, 1, '2022-08-08 14:51:44', '2022-08-22 15:33:51'),
 (2, 'Afriwell', NULL, 'Demo', 'afriwelldemo@gmail.com', '22b596cc89584ab9a7a82ebf015ab43b763dc7b6', NULL, 7016441159, 1, '2022-08-16 12:11:09', NULL);
 
 -- --------------------------------------------------------
@@ -2972,12 +2975,11 @@ CREATE TABLE `useraddress` (
 --
 
 INSERT INTO `useraddress` (`id`, `userid`, `name`, `contactnumber`, `pincode`, `locality`, `address`, `city`, `state`, `landmark`, `alternativeno`, `createddate`, `updateddate`) VALUES
-(1, 1, 'Shubham Patel', 8141952604, 387620, 'Indian', 'dhgf', 'Kapadwanj', 'PONDICHERRY', 'Goa', '7016441159', '2021-04-29', NULL),
-(2, 1, 'Kunj Patel', 8141952604, 387620, 'Indian', 'MotaPatelVada', 'Kapadwanj', 'BIHAR', 'Goa', '7016441159', '2021-04-29', NULL),
+(1, 1, 'Shubham Patel', 8141952604, 380001, 'Indian', 'Vaibhav Commercial Complex', 'Anand', 'PONDICHERRY', 'Goa', '7016441159', '2021-04-29', '2022-08-22'),
+(2, 1, 'Kunj Patel', 8141952604, 387620, 'Indian', 'MotaPatelVada shubham', 'Kapadwanj', 'BIHAR', 'Goa', '7016441159', '2021-04-29', '2022-08-22'),
 (3, 1, 'Pranav Goswami', 8141952604, 387620, 'Indian', 'MotaPatelVada', 'Kapadwanj', 'BIHAR', 'Goa', '7016441159', '2021-04-29', NULL),
 (4, 1, 'Maitri Shah ', 111584487, 387620, 'Indian', 'MotaPatelVada ', 'Anand', 'ARUNACHAL PRADESH', 'Goa', '7016441159', '2021-04-29', '2021-05-01'),
-(7, 9, 'Shah Parin', 8000114108, 390023, 'Indian', 'Vadoadara', 'Vadodara', 'GUJARAT', 'Home', '8013014132', '2021-04-30', NULL),
-(12, 1, 'Shubham Patel', 8141952604, 380001, 'undefined', 'Vaibhav Commercial Complex', 'Anand', 'Gujarat', 'undefined', '7016441159', '2022-08-17', NULL);
+(7, 9, 'Shah Parin', 8000114108, 390023, 'Indian', 'Vadoadara', 'Vadodara', 'GUJARAT', 'Home', '8013014132', '2021-04-30', NULL);
 
 -- --------------------------------------------------------
 
@@ -2989,18 +2991,27 @@ CREATE TABLE `webbanners` (
   `id` int(11) NOT NULL,
   `name` varchar(45) DEFAULT NULL,
   `bannersimage` varchar(45) DEFAULT NULL,
-  `status` tinyint(4) DEFAULT NULL
+  `status` tinyint(4) DEFAULT NULL,
+  `title` varchar(250) DEFAULT NULL,
+  `subtitle` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `webbanners`
 --
 
-INSERT INTO `webbanners` (`id`, `name`, `bannersimage`, `status`) VALUES
-(5, 'Top', '/images/banners/bd1a7462-68fb-411b-94a3.jpg', 0),
-(6, 'Top', '/images/banners/1298b1a5-40f9-4450-8ae1.jpg', 1),
-(7, 'Top', '/images/banners/0d7f36b9-0259-4c28-ad94.jpg', 0),
-(8, 'Top', '/images/banners/1ce95ee3-96b0-4016-b305.jpg', 1);
+INSERT INTO `webbanners` (`id`, `name`, `bannersimage`, `status`, `title`, `subtitle`) VALUES
+(11, 'Top', '/images/banners/8e829401-237c-4025-a688.jpg', 1, NULL, NULL),
+(15, 'Top', '/images/banners/187630c1-c555-4bf5-a08d.jpg', 1, NULL, NULL),
+(16, 'Top', '/images/banners/5e976714-ed58-4e31-bb2d.jpg', 1, NULL, NULL),
+(17, 'Top', '/images/banners/87dfcf40-05ab-4f20-b276.jpg', 1, NULL, NULL),
+(18, 'Middle Left', '/images/banners/00ee8c03-73c7-4f9b-9adc.png', 1, NULL, NULL),
+(19, 'Middle Right Top', '/images/banners/15e632ef-075b-41fb-b518.png', 1, NULL, NULL),
+(20, 'Middle Right Down', '/images/banners/9cd30883-ebc1-48c6-b647.png', 1, NULL, NULL),
+(21, 'Middle Right Down', '/images/banners/3e4eef0a-f59d-443e-941f.png', 1, NULL, NULL),
+(27, 'Deal Banners', '/images/banners/981de440-f4d8-41ed-9306.jpg', 1, 'Solar Panel Setting', 'Solar is renewable energy.'),
+(28, 'Flash Sale Banner', '/images/banners/e418e97e-8984-4e83-b80e.jpg', 1, 'Flash Offer Avilable', 'Pumps Are avilable'),
+(30, 'End', '/images/banners/46e4a1a5-20bb-4b78-8772.jpg', 1, 'undefined', 'undefined');
 
 -- --------------------------------------------------------
 
@@ -3152,13 +3163,13 @@ ALTER TABLE `banklist`
 -- AUTO_INCREMENT for table `cartlist`
 --
 ALTER TABLE `cartlist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=314;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=347;
 
 --
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=199;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=206;
 
 --
 -- AUTO_INCREMENT for table `clothsize`
@@ -3188,7 +3199,7 @@ ALTER TABLE `mobilebanners`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `product`
@@ -3236,19 +3247,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `useraddress`
 --
 ALTER TABLE `useraddress`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `webbanners`
 --
 ALTER TABLE `webbanners`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
