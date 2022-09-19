@@ -186,7 +186,7 @@ router.post("/ChangeOrdersStatus", (req, res, next) => {
 });
 router.get("/GetProductList", (req, res, next) => {
 
-    db.executeSql("select p.id,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.productSize,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.productMainImage,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale from product p ", function (data, err) {
+    db.executeSql("SELECT p.id, p.maintag, p.mainCategory, p.category, p.subCategory, p.productName, p.brandName, p.manufacturerName, p.productCode, p.productSRNumber, p.productPrice, p.productPer, p.discountPrice, p.quantity, p.soldQuantity, p.size, p.color, p.descripition, p.productDimension, p.itemWeight, p.taxslab, p.emiOptions, p.avibilityStatus, p.relatedProduct, p.isNewArrival, p.isBestProduct, p.isHot, p.isOnSale, p.startRating, p.isActive, p.createddate, p.updateddate FROM productmaster p ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -194,6 +194,16 @@ router.get("/GetProductList", (req, res, next) => {
         }
     });
 });
+// router.get("/GetProductList", (req, res, next) => {
+
+//     db.executeSql("select p.id,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.productSize,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.productMainImage,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale from product p ", function (data, err) {
+//         if (err) {
+//             console.log("Error in store.js", err);
+//         } else {
+//             return res.json(data);
+//         }
+//     });
+// });
 router.post("/GetProductSizeList", (req, res, next) => {
 
     console.log(req.body);
@@ -216,46 +226,40 @@ router.get("/RemoveMainCategory/:id", (req, res, next) => {
     });
 });
 
+router.get("/GetProductMasterTag", (req, res, next) => {
+    db.executeSql("SELECT * FROM `productmaster` order by maintag desc limit 1", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
 
 router.post("/SaveAddProducts", (req, res, next) => {
     console.log(req.body)
     if (req.body.id == undefined || req.body.id == null) {
-        db.executeSql("INSERT INTO `product`(`productName`,`brandName`,`manufacturerName`,`productCode`,`startRating`,`productSRNumber`,`productPrice`,`discountPrice`,`emiOptions`,`avibilityStatus`,`descripition`,`relatedProduct`,`productSize`,`itemWeight`,`isActive`,`mainCategory`,`category`,`subCategory`,`productMainImage`,`createddate`,`taxslab`)VALUES('" + req.body.productName + "','" + req.body.brandName + "','" + req.body.manufacturerName + "','" + req.body.productCode + "'," + req.body.startRating + ",'" + req.body.productSRNumber + "','" + req.body.productPrice + "','" + req.body.discountPrice + "'," + req.body.emiOptiions + "," + req.body.avibilityStatus + ",'" + req.body.descripition + "'," + req.body.relatedProduct + ",'" + req.body.productSize + "','" + req.body.itemWeight + "'," + req.body.isActive + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productMainImage + "',CURRENT_TIMESTAMP,'" + req.body.taxslab + "');", function (data, err) {
-            if (err) {
-                console.log("Error in store.js", err);
-            } else {
-                db.executeSql("SELECT id FROM product ORDER BY createddate DESC LIMIT 1", function (data1, err) {
-                    if (err) {
-                        console.log("Error in store.js", err);
-                    } else {
-                        console.log("CCCFFFFGF", req.body.selectedSize);
-                        req.body.selectedSize.forEach(element => {
-                            db.executeSql("INSERT INTO `quantitywithsize`(`productid`,`quantity`,`size`,`color`,`soldquantity`,`stockdate`)VALUES(" + data1[0].id + ",'" + element.quantity + "','" + element.selsize + "','" + element.color + "','" + element.soldquantity + "',CURRENT_TIMESTAMP);", function (data, err) {
-                                if (err) {
-                                    console.log("Error in store.js", err);
-                                } else {
-                                    console.log(req.body.multi)
+        for (let i = 0; i < req.body.selectedSize.length; i++) {
+            db.executeSql("INSERT INTO `productmaster`(`maintag`,`mainCategory`, `category`, `subCategory`, `productName`, `brandName`, `manufacturerName`, `productCode`, `productSRNumber`, `productPrice`, `productPer`, `discountPrice`, `quantity`, `size`, `color`, `descripition`, `productDimension`, `itemWeight`, `taxslab`, `emiOptions`, `avibilityStatus`, `relatedProduct`,`startRating`, `isActive`, `createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productName + "','" + req.body.brandName + "','" + req.body.manufacturerName + "','" + req.body.productCode + "','" + req.body.productSRNumber + "','" + req.body.selectedSize[i].mainPrice + "','" + req.body.selectedSize[i].discountPerc + "','" + req.body.selectedSize[i].discountPrice + "','" + req.body.selectedSize[i].quantity + "','" + req.body.selectedSize[i].selsize + "','" + req.body.selectedSize[i].color + "','" + req.body.descripition + "','" + req.body.productSize + "','" + req.body.itemWeight + "','" + req.body.taxslab + "'," + req.body.emiOptiions + "," + req.body.avibilityStatus + "," + req.body.relatedProduct + "," + req.body.startRating + "," + req.body.isActive + ",CURRENT_TIMESTAMP);", function (data, err) {
+                if (err) {
+                    console.log("Error in store.js", err);
+                } else {
 
-                                }
-                            });
-
-
-                        })
-                        for (let i = 0; i < req.body.multi.length; i++) {
-                            db.executeSql("INSERT INTO `images`(`mainCategoryId`,`productid`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.mainCategory + "," + data1[0].id + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
-                                if (err) {
-                                    console.log("Error in store.js", err);
-                                } else { }
-                            });
-                        }
-                    }
-                });
-            }
-        })
+                }
+            })
+        }
+        for (let i = 0; i < req.body.multi.length; i++) {
+            console.log(req.body.multi, 'im in multi')
+            db.executeSql("INSERT INTO `images`(`productid`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
+                if (err) {
+                    console.log("Error in store.js", err);
+                } else { }
+            });
+        }
         res.json("success");
     }
     else {
-        db.executeSql("UPDATE `product` SET `productName`='" + req.body.productName + "',`brandName`='" + req.body.brandName + "',`manufacturerName`='" + req.body.manufacturerName + "',`productCode`=" + req.body.productCode + ",`startRating`=" + req.body.startRating + ",`productSRNumber`=" + req.body.productSRNumber + ",`productPrice`=" + req.body.productPrice + ",`discountPrice`=" + req.body.discountPrice + ",`emiOptions`=" + req.body.emiOptiions + ",`avibilityStatus`=" + req.body.avibilityStatus + ",`descripition`='" + req.body.descripition + "',`relatedProduct`='" + req.body.relatedProduct + "',`productSize`='" + req.body.productSize + "',`itemWeight`='" + req.body.itemWeight + "',`isActive`=" + req.body.isActive + ",`mainCategory`=" + req.body.mainCategory + ",`category`=" + req.body.category + ",`subCategory`=" + req.body.subCategory + ",`productMainImage`=" + req.body.productMainImage + ",`updateddate`=CURRENT_TIMESTAMP,`taxslab`='"+req.body.taxslab+"' WHERE id=" + req.body.id, function (data, err) {
+        db.executeSql("UPDATE `product` SET `productName`='" + req.body.productName + "',`brandName`='" + req.body.brandName + "',`manufacturerName`='" + req.body.manufacturerName + "',`productCode`=" + req.body.productCode + ",`startRating`=" + req.body.startRating + ",`productSRNumber`=" + req.body.productSRNumber + ",`productPrice`=" + req.body.productPrice + ",`discountPrice`=" + req.body.discountPrice + ",`emiOptions`=" + req.body.emiOptiions + ",`avibilityStatus`=" + req.body.avibilityStatus + ",`descripition`='" + req.body.descripition + "',`relatedProduct`='" + req.body.relatedProduct + "',`productSize`='" + req.body.productSize + "',`itemWeight`='" + req.body.itemWeight + "',`isActive`=" + req.body.isActive + ",`mainCategory`=" + req.body.mainCategory + ",`category`=" + req.body.category + ",`subCategory`=" + req.body.subCategory + ",`productMainImage`=" + req.body.productMainImage + ",`updateddate`=CURRENT_TIMESTAMP,`taxslab`='" + req.body.taxslab + "' WHERE id=" + req.body.id, function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
@@ -265,6 +269,50 @@ router.post("/SaveAddProducts", (req, res, next) => {
     }
 
 });
+// router.post("/SaveAddProducts", (req, res, next) => {
+//     console.log(req.body)
+//     if (req.body.id == undefined || req.body.id == null) {
+//         db.executeSql("INSERT INTO `product`(`productName`,`brandName`,`manufacturerName`,`productCode`,`startRating`,`productSRNumber`,`productPrice`,`discountPrice`,`emiOptions`,`avibilityStatus`,`descripition`,`relatedProduct`,`productSize`,`itemWeight`,`isActive`,`mainCategory`,`category`,`subCategory`,`productMainImage`,`createddate`,`taxslab`)VALUES('" + req.body.productName + "','" + req.body.brandName + "','" + req.body.manufacturerName + "','" + req.body.productCode + "'," + req.body.startRating + ",'" + req.body.productSRNumber + "','" + req.body.productPrice + "','" + req.body.discountPrice + "'," + req.body.emiOptiions + "," + req.body.avibilityStatus + ",'" + req.body.descripition + "'," + req.body.relatedProduct + ",'" + req.body.productSize + "','" + req.body.itemWeight + "'," + req.body.isActive + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productMainImage + "',CURRENT_TIMESTAMP,'" + req.body.taxslab + "');", function (data, err) {
+//             if (err) {
+//                 console.log("Error in store.js", err);
+//             } else {
+//                 db.executeSql("SELECT id FROM product ORDER BY createddate DESC LIMIT 1", function (data1, err) {
+//                     if (err) {
+//                         console.log("Error in store.js", err);
+//                     } else {
+//                         console.log("CCCFFFFGF", req.body.selectedSize);
+//                         req.body.selectedSize.forEach(element => {
+//                             db.executeSql("INSERT INTO `quantitywithsize`(`productid`,`quantity`,`size`,`color`,`stockdate`,`productprice`,`discountprice`,`discountper`)VALUES(" + data1[0].id + "," + element.quantity + ",'" + element.selsize + "','" + element.color + "',CURRENT_TIMESTAMP," + element.mainPrice + "," + element.discountPrice + "," + element.discountPerc + ");", function (data, err) {
+//                                 if (err) {
+//                                     console.log("Error in store.js", err);
+//                                 } else {
+//                                     console.log(req.body.multi)
+//                                 }
+//                             });
+//                         })
+//                         for (let i = 0; i < req.body.multi.length; i++) {
+//                             db.executeSql("INSERT INTO `images`(`mainCategoryId`,`productid`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.mainCategory + "," + data1[0].id + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
+//                                 if (err) {
+//                                     console.log("Error in store.js", err);
+//                                 } else { }
+//                             });
+//                         }
+//                     }
+//                 });
+//             }
+//         })
+//         res.json("success");
+//     }
+//     else {
+//         db.executeSql("UPDATE `product` SET `productName`='" + req.body.productName + "',`brandName`='" + req.body.brandName + "',`manufacturerName`='" + req.body.manufacturerName + "',`productCode`=" + req.body.productCode + ",`startRating`=" + req.body.startRating + ",`productSRNumber`=" + req.body.productSRNumber + ",`productPrice`=" + req.body.productPrice + ",`discountPrice`=" + req.body.discountPrice + ",`emiOptions`=" + req.body.emiOptiions + ",`avibilityStatus`=" + req.body.avibilityStatus + ",`descripition`='" + req.body.descripition + "',`relatedProduct`='" + req.body.relatedProduct + "',`productSize`='" + req.body.productSize + "',`itemWeight`='" + req.body.itemWeight + "',`isActive`=" + req.body.isActive + ",`mainCategory`=" + req.body.mainCategory + ",`category`=" + req.body.category + ",`subCategory`=" + req.body.subCategory + ",`productMainImage`=" + req.body.productMainImage + ",`updateddate`=CURRENT_TIMESTAMP,`taxslab`='"+req.body.taxslab+"' WHERE id=" + req.body.id, function (data, err) {
+//             if (err) {
+//                 console.log("Error in store.js", err);
+//             } else {
+//                 return res.json(data);
+//             }
+//         });
+//     }
+// });
 router.post("/UpdateReviews", (req, res, next) => {
     console.log(req.body)
     db.executeSql("UPDATE `ecommerce`.`ratings` SET rating=" + req.body.rating + ",comment='" + req.body.comment + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
