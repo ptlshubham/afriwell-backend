@@ -269,6 +269,17 @@ router.post("/SaveAddProducts", (req, res, next) => {
     }
 
 });
+router.post("/SaveBulkProductsUpload", (req, res, next) => {
+    for (let i = 0; i < req.body.length; i++) {
+        db.executeSql("INSERT INTO `productmaster`(`maintag`,`mainCategory`, `category`, `subCategory`, `productName`, `brandName`, `manufacturerName`, `productCode`, `productSRNumber`, `productPrice`, `productPer`, `discountPrice`, `quantity`, `size`, `color`, `descripition`, `productDimension`, `itemWeight`, `taxslab`, `emiOptions`, `avibilityStatus`, `relatedProduct`,`startRating`, `isActive`, `createddate`)VALUES(" + req.body[i].maintag + "," + req.body[i].mainCategory + "," + req.body[i].category + "," + req.body[i].subCategory + ",'" + req.body[i].productName + "','" + req.body[i].brandName + "','" + req.body[i].manufacturerName + "','" + req.body[i].productCode + "','" + req.body[i].productSRNumber + "'," + req.body[i].productPrice + "," + req.body[i].productPer + "," + req.body[i].discountPrice + "," + req.body[i].quantity + ",'" + req.body[i].size + "','" + req.body[i].color + "','" + req.body[i].descripition + "','" + req.body[i].productDimension + "','" + req.body[i].itemWeight + "'," + req.body[i].taxslab + "," + req.body[i].emiOptions + "," + req.body[i].avibilityStatus + "," + req.body[i].relatedProduct + "," + req.body[i].startRating + ",false,CURRENT_TIMESTAMP);", function (data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+            }
+        })
+    }
+    return res.json('success');
+});
 // router.post("/SaveAddProducts", (req, res, next) => {
 //     console.log(req.body)
 //     if (req.body.id == undefined || req.body.id == null) {
