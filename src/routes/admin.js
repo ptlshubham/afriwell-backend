@@ -491,7 +491,7 @@ router.post("/RemoveMobileBanners", (req, res, next) => {
 
 router.post("/getFilterProductList", (req, res, next) => {
     console.log(req.body);
-    db.executeSql("select * from product  where mainCategory=" + req.body.maincatid + " OR category=" + req.body.catid + " OR subCategory=" + req.body.subid + ";", function (data, err) {
+    db.executeSql("select * from productmaster  where mainCategory=" + req.body.maincatid + " OR category=" + req.body.catid + " OR subCategory=" + req.body.subid + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
