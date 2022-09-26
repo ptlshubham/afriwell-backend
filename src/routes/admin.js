@@ -280,6 +280,28 @@ router.post("/SaveBulkProductsUpload", (req, res, next) => {
     }
     return res.json('success');
 });
+router.post("/SaveBulkProductsImages", (req, res, next) => {
+    for (let i = 0; i < req.body.multi.length; i++) {
+        console.log(req.body.multi, 'im in multi')
+        db.executeSql("INSERT INTO `images`(`productid`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else { }
+        });
+    }
+    return res.json('success');
+});
+
+router.post("/AddRestockQuantity", (req, res, next) => {
+    db.executeSql("UPDATE productmaster SET productPrice=" + req.body.productPrice + ",productPer=" + req.body.productPer + ",discountPrice=" + req.body.discountPrice + ",quantity=" + req.body.quantity + ",size='" + req.body.size + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+
+        }
+    })
+});
 // router.post("/SaveAddProducts", (req, res, next) => {
 //     console.log(req.body)
 //     if (req.body.id == undefined || req.body.id == null) {
