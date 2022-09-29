@@ -15,10 +15,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const adminRoutes = require('./src/routes/admin');
 const userRoutes = require('./src/routes/user');
- const auth = require('./src/routes/authenticate');
+const auth = require('./src/routes/authenticate');
+const shiprocket = require('./src/routes/shiprocket');
 app.use("/admin", adminRoutes);
 app.use("/user", userRoutes);
- app.use("/authenticate",auth);
+app.use("/authenticate",auth);
+app.use("/shiprocket",shiprocket);
 // parse application/x-www-form-urlencoded
 
 app.use(express.static('public'));

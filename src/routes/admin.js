@@ -140,7 +140,7 @@ router.post("/UpdateMainCategory", (req, res, next) => {
 });
 router.post("/UpdateCategory", (req, res, next) => {
     console.log(req.body);
-    db.executeSql("UPDATE `ecommerce`.`category` SET parent=" + req.body.parent + ",bannersimage='" + req.body.bannerimage + "',name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
+    db.executeSql("UPDATE  `category` SET parent=" + req.body.parent + ",bannersimage='" + req.body.bannerimage + "',name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -152,7 +152,7 @@ router.post("/UpdateCategory", (req, res, next) => {
 router.post("/UpdateOrdersStatus", (req, res, next) => {
     console.log('accept');
     console.log(req.body);
-    db.executeSql("UPDATE `ecommerce`.`orders` SET status='" + req.body.status + "' WHERE id=" + req.body.id + ";", function (data, err) {
+    db.executeSql("UPDATE  `orders` SET status='" + req.body.status + "' WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -164,7 +164,7 @@ router.post("/UpdateOrdersStatus", (req, res, next) => {
 router.post("/AcceptUserOrders", (req, res, next) => {
     console.log('accept');
     console.log(req.body);
-    db.executeSql("UPDATE `ecommerce`.`orders` SET status= 'Accepted' WHERE id=" + req.body.id + ";", function (data, err) {
+    db.executeSql("UPDATE  `orders` SET status= 'Accepted' WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -176,7 +176,7 @@ router.post("/AcceptUserOrders", (req, res, next) => {
 router.post("/ChangeOrdersStatus", (req, res, next) => {
     console.log('accept');
     console.log(req.body);
-    db.executeSql("UPDATE `ecommerce`.`orders` SET status= 'Accepted' WHERE id=" + req.body.id + ";", function (data, err) {
+    db.executeSql("UPDATE  `orders` SET status= 'Accepted' WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -186,11 +186,24 @@ router.post("/ChangeOrdersStatus", (req, res, next) => {
 });
 router.get("/GetProductList", (req, res, next) => {
 
-    db.executeSql("SELECT p.id, p.maintag, p.mainCategory, p.category, p.subCategory, p.productName, p.brandName, p.manufacturerName, p.productCode, p.productSRNumber, p.productPrice, p.productPer, p.discountPrice, p.quantity, p.soldQuantity, p.size, p.color, p.descripition, p.productDimension, p.itemWeight, p.taxslab, p.emiOptions, p.avibilityStatus, p.relatedProduct, p.isNewArrival, p.isBestProduct, p.isHot, p.isOnSale, p.startRating, p.isActive, p.createddate, p.updateddate FROM productmaster p ", function (data, err) {
+    db.executeSql("select * from productmaster", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            if(data.length >0){
+                data.forEach((element,ind) => {
+                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            element.productMainImage = data1;
+                            if(data.length == (ind+1)){
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
+            }
         }
     });
 });
@@ -217,7 +230,7 @@ router.post("/GetProductSizeList", (req, res, next) => {
 });
 
 router.get("/RemoveMainCategory/:id", (req, res, next) => {
-    db.executeSql("UPDATE `ecommerce`.`category` SET updateddate=CURRENT_TIMESTAMP,isactive=0 WHERE id=" + req.params.id + ";", function (data, err) {
+    db.executeSql("UPDATE  `category` SET updateddate=CURRENT_TIMESTAMP,isactive=0 WHERE id=" + req.params.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -326,7 +339,7 @@ router.post("/SaveBulkProductsUpload", (req, res, next) => {
 // });
 router.post("/UpdateReviews", (req, res, next) => {
     console.log(req.body)
-    db.executeSql("UPDATE `ecommerce`.`ratings` SET rating=" + req.body.rating + ",comment='" + req.body.comment + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
+    db.executeSql("UPDATE  `ratings` SET rating=" + req.body.rating + ",comment='" + req.body.comment + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -447,7 +460,7 @@ router.post("/SaveWebBanners", (req, res, next) => {
 });
 router.post("/UpdateActiveWebBanners", (req, res, next) => {
     console.log(req.body)
-    db.executeSql("UPDATE `ecommerce`.`webbanners` SET status=" + req.body.status + " WHERE id=" + req.body.id + ";", function (data, err) {
+    db.executeSql("UPDATE  `webbanners` SET status=" + req.body.status + " WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -469,7 +482,7 @@ router.post("/SaveMobileBanners", (req, res, next) => {
 });
 router.post("/UpdateActiveMobileBanners", (req, res, next) => {
     console.log(req.body)
-    db.executeSql("UPDATE `ecommerce`.`mobilebanners` SET status=" + req.body.status + " WHERE id=" + req.body.id + ";", function (data, err) {
+    db.executeSql("UPDATE  `mobilebanners` SET status=" + req.body.status + " WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -506,45 +519,111 @@ router.post("/getFilterProductList", (req, res, next) => {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            // return res.json(data);
+            if(data.length >0){
+                data.forEach((element,ind) => {
+                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            element.productMainImage = data1;
+                            if(data.length == (ind+1)){
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
+            }
 
         }
     });
 });
 router.post("/GetAllFilterProduct", (req, res, next) => {
     if (req.body.filter == 'hot') {
-        db.executeSql("select * from product where isHot=1", function (data, err) {
+        db.executeSql("select * from productmaster where isHot=1", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                return res.json(data);
+                if(data.length >0){
+                    data.forEach((element,ind) => {
+                        db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                            if (err) {
+                                console.log("Error in store.js", err);
+                            } else {
+                                element.productMainImage = data1;
+                                if(data.length == (ind+1)){
+                                    res.json(data);
+                                }
+                            }
+                        });
+                    });
+                }
             }
         });
     }
     else if (req.body.filter == 'best') {
-        db.executeSql("select * from product where isBestProduct=1", function (data, err) {
+        db.executeSql("select * from productmaster where isBestProduct=1", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                return res.json(data);
+                if(data.length >0){
+                    data.forEach((element,ind) => {
+                        db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                            if (err) {
+                                console.log("Error in store.js", err);
+                            } else {
+                                element.productMainImage = data1;
+                                if(data.length == (ind+1)){
+                                    res.json(data);
+                                }
+                            }
+                        });
+                    });
+                }
             }
         });
     }
     else if (req.body.filter == 'sale') {
-        db.executeSql("select * from product where isOnSale=1", function (data, err) {
+        db.executeSql("select * from productmaster where isOnSale=1", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                return res.json(data);
+                if(data.length >0){
+                    data.forEach((element,ind) => {
+                        db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                            if (err) {
+                                console.log("Error in store.js", err);
+                            } else {
+                                element.productMainImage = data1;
+                                if(data.length == (ind+1)){
+                                    res.json(data);
+                                }
+                            }
+                        });
+                    });
+                }
             }
         });
     }
     else {
-        db.executeSql("select * from product where isNewArrival=1", function (data, err) {
+        db.executeSql("select * from productmaster where isNewArrival=1", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                return res.json(data);
+                if(data.length >0){
+                    data.forEach((element,ind) => {
+                        db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                            if (err) {
+                                console.log("Error in store.js", err);
+                            } else {
+                                element.productMainImage = data1;
+                                if(data.length == (ind+1)){
+                                    res.json(data);
+                                }
+                            }
+                        });
+                    });
+                }
             }
         });
     }
@@ -769,7 +848,7 @@ router.post("/UploadMobileBannersImage", (req, res, next) => {
 router.post("/saveEmioption", (req, res, next) => {
     console.log(req.body);
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("INSERT INTO `ecommerce`.`emi`(`bankid`,`months`,`intrest`,`isactive`,`createddate`,`updateddate`)VALUES(" + req.body[i].bankid + "," + req.body[i].months + "," + req.body[i].intrest + ",true,CURRENT_TIMESTAMP,NULL);", function (data, err) {
+        db.executeSql("INSERT INTO  `emi`(`bankid`,`months`,`intrest`,`isactive`,`createddate`,`updateddate`)VALUES(" + req.body[i].bankid + "," + req.body[i].months + "," + req.body[i].intrest + ",true,CURRENT_TIMESTAMP,NULL);", function (data, err) {
             if (err) {
                 console.log(err);
 
@@ -788,7 +867,7 @@ router.post("/saveEmioption", (req, res, next) => {
 router.post("/addToNewArrivals", (req, res, next) => {
     console.log(req.body);
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update `ecommerce`.`product` SET isNewArrival=true,isBestProduct=false,isHot=false,isOnSale=false where id=" + req.body[i].id, function (data, err) {
+        db.executeSql("update  `product` SET isNewArrival=true,isBestProduct=false,isHot=false,isOnSale=false where id=" + req.body[i].id, function (data, err) {
             if (err) {
                 console.log(err);
 
@@ -803,7 +882,7 @@ router.post("/addToNewArrivals", (req, res, next) => {
 
 router.post("/addToBestProduct", (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update `ecommerce`.`product` SET isNewArrival=false,isBestProduct=true,isHot=false,isOnSale=false where id=" + req.body[i].id, function (data, err) {
+        db.executeSql("update  `product` SET isNewArrival=false,isBestProduct=true,isHot=false,isOnSale=false where id=" + req.body[i].id, function (data, err) {
             if (err) {
                 console.log(err);
 
@@ -817,7 +896,7 @@ router.post("/addToBestProduct", (req, res, next) => {
 });
 router.post("/addToHotProduct", (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update `ecommerce`.`product` SET isNewArrival=false,isBestProduct=false,isHot=true,isOnSale=false where id=" + req.body[i].id, function (data, err) {
+        db.executeSql("update  `product` SET isNewArrival=false,isBestProduct=false,isHot=true,isOnSale=false where id=" + req.body[i].id, function (data, err) {
             if (err) {
                 console.log(err);
 
@@ -831,7 +910,7 @@ router.post("/addToHotProduct", (req, res, next) => {
 });
 router.post("/addToOnSale", (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update `ecommerce`.`product` SET isNewArrival=false,isBestProduct=false,isHot=false,isOnSale=true where id=" + req.body[i].id, function (data, err) {
+        db.executeSql("update  `product` SET isNewArrival=false,isBestProduct=false,isHot=false,isOnSale=true where id=" + req.body[i].id, function (data, err) {
             if (err) {
                 console.log(err);
 

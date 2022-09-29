@@ -82,7 +82,7 @@ router.post("/getOrdersForDashboard", (req, res, next) => {
 
 
 router.post("/saveAddToCart", (req, res, next) => {
-    // console.log(req.body);
+     console.log(req.body[0].userid);
     db.executeSql("INSERT INTO `cartlist`(`userid`,`productid`,`quantity`,`createddate`)VALUES('" + req.body[0].userid + "'," + req.body[0].product.id + "," + req.body[0].quantity + ",CURRENT_TIMESTAMP);", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -211,22 +211,48 @@ router.post("/saveUserOrders", (req, res, next) => {
 });
 router.get("/GetProductList", (req, res, next) => {
     console.log("here");
-    db.executeSql("select * from product", function (data, err) {
+    db.executeSql("select * from productmaster", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            if(data.length >0){
+                data.forEach((element,ind) => {
+                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            element.productMainImage = data1;
+                            if(data.length == (ind+1)){
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
+            }
         }
     });
 });
 
 router.post("/GetSimilarProductList", (req, res, next) => {
 
-    db.executeSql("select * from product where category=" + req.body.id, function (data, err) {
+    db.executeSql("select * from productmaster where category=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            if(data.length >0){
+                data.forEach((element,ind) => {
+                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            element.productMainImage = data1;
+                            if(data.length == (ind+1)){
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
+            }
         }
     });
 });
@@ -283,55 +309,120 @@ router.get("/GetWishList", (req, res, next) => {
     });
 });
 router.get("/GetProductDetails/:id", (req, res, next) => {
-    db.executeSql("select * from product where id =" + req.params.id, function (data, err) {
+    db.executeSql("select * from productmaster where id =" + req.params.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            if(data.length >0){
+                data.forEach((element,ind) => {
+                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            element.productMainImage = data1;
+                            if(data.length == (ind+1)){
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
+            }
         }
     });
 });
 
 router.get("/GetBestProduct", (req, res, next) => {
 
-    db.executeSql("select * from product where isBestProduct=1", function (data, err) {
+    db.executeSql("select * from productmaster where isBestProduct=1", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            if(data.length >0){
+                data.forEach((element,ind) => {
+                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            element.productMainImage = data1;
+                            if(data.length == (ind+1)){
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
+            }
         }
     });
 });
 
 router.get("/GetNewArrivalProduct", (req, res, next) => {
 
-    db.executeSql("select * from product where isNewArrival=1", function (data, err) {
+    db.executeSql("select * from productmaster where isNewArrival=1", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            if(data.length >0){
+                data.forEach((element,ind) => {
+                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            element.productMainImage = data1;
+                            if(data.length == (ind+1)){
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
+            }
         }
     });
 });
 
 router.get("/GetSaleProduct", (req, res, next) => {
 
-    db.executeSql("select * from product where isOnSale=1", function (data, err) {
+    db.executeSql("select * from productmaster where isOnSale=1", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            if(data.length >0){
+                data.forEach((element,ind) => {
+                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            element.productMainImage = data1;
+                            if(data.length == (ind+1)){
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
+            }
         }
     });
 });
 
 router.get("/GetHotProduct", (req, res, next) => {
 
-    db.executeSql("select * from product where isHot=1", function (data, err) {
+    db.executeSql("select * from productmaster where isHot=1", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            if(data.length >0){
+                data.forEach((element,ind) => {
+                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            element.productMainImage = data1;
+                            if(data.length == (ind+1)){
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
+            }
         }
     });
 });
@@ -553,21 +644,47 @@ router.post("/GetNavbarRoutedProducts", (req, res, next) => {
     console.log("herde");
     // console.log(req.body);
     if (req.body.subid != undefined) {
-        db.executeSql("select * from product where subCategory=" + req.body.subid, function (data, err) {
+        db.executeSql("select * from productmaster where subCategory=" + req.body.subid, function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
                 // console.log(data);
-                return res.json(data);
+                return res.json(data); if(data.length >0){
+                    data.forEach((element,ind) => {
+                        db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                            if (err) {
+                                console.log("Error in store.js", err);
+                            } else {
+                                element.productMainImage = data1;
+                                if(data.length == (ind+1)){
+                                    res.json(data);
+                                }
+                            }
+                        });
+                    });
+                }
             }
         });
     }
     else {
-        db.executeSql("select * from product where category=" + req.body.catid, function (data, err) {
+        db.executeSql("select * from productmaster where category=" + req.body.catid, function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                return res.json(data);
+                if(data.length >0){
+                    data.forEach((element,ind) => {
+                        db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                            if (err) {
+                                console.log("Error in store.js", err);
+                            } else {
+                                element.productMainImage = data1;
+                                if(data.length == (ind+1)){
+                                    res.json(data);
+                                }
+                            }
+                        });
+                    });
+                }
             }
         });
     }
