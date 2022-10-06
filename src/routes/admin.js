@@ -90,14 +90,61 @@ router.get("/GetROIList", (req, res, next) => {
 
 router.post("/GetOrdersList", (req, res, next) => {
     // console.log('ygyguhguft');
-    db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition,p.productMainImage, ad.address ,ad.city,ad.state,ad.pincode,ad.contactnumber from orders o inner join product p on o.productid=p.id inner join useraddress ad on ad.id = o.addressid where o.status='" + req.body.status + "';", function (data, err) {
+    db.executeSql("select o.id,p.maintag,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition, ad.address ,ad.city,ad.state,ad.pincode,ad.contactnumber from orders o inner join productmaster p on o.productid=p.id inner join useraddress ad on ad.id = o.addressid where o.status='" + req.body.status + "';", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            if(data.length >0){
+                data.forEach((element,ind) => {
+                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            element.productMainImage = data1;
+                            if(data.length == (ind+1)){
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
+            }
         }
     });
+
+    // db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as productId,p.maintag,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale from orders o join productmaster p on o.productid=p.id where o.userid=" + req.body.id, function (data, err) {
+    //     if (err) {
+    //         console.log("Error in store.js", err);
+    //     } else {
+    //         // return res.json(data);
+    //         if(data.length >0){
+    //             data.forEach((element,ind) => {
+    //                 db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+    //                     if (err) {
+    //                         console.log("Error in store.js", err);
+    //                     } else {
+    //                         element.productMainImage = data1;
+    //                         if(data.length == (ind+1)){
+    //                             res.json(data);
+    //                         }
+    //                     }
+    //                 });
+    //             });
+    //         }
+    //     }    
+    // });
 });
+
+
+router.post("/saveShiprocketData",(req,res,next)=>{
+    console.log("hdhdhudhuduyhduhuydhuhu")
+    db.executeSql("INSERT INTO `order_of_shiprocket`( `order_id_system`, `order_id_shiprocket`, `status`, `status_code`, `created_date`) VALUES ("+req.body.system_order_id+","+req.body.order_id+",'"+req.body.status+"',"+req.body.status_code+",CURRENT_TIMESTAMP)", function (data, err){
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+             res.json(data);
+        }
+    })
+})
 
 router.post("/RemoveROIList", (req, res, next) => {
 
@@ -186,13 +233,13 @@ router.post("/ChangeOrdersStatus", (req, res, next) => {
 });
 router.get("/GetProductList", (req, res, next) => {
 
-    db.executeSql("select * from productmaster", function (data, err) {
+    db.executeSql("SELECT * FROM `productmaster` pm join category c on c.id = pm.category;", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
             if(data.length >0){
                 data.forEach((element,ind) => {
-                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -207,16 +254,7 @@ router.get("/GetProductList", (req, res, next) => {
         }
     });
 });
-// router.get("/GetProductList", (req, res, next) => {
 
-//     db.executeSql("select p.id,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.productSize,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.productMainImage,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale from product p ", function (data, err) {
-//         if (err) {
-//             console.log("Error in store.js", err);
-//         } else {
-//             return res.json(data);
-//         }
-//     });
-// });
 router.post("/GetProductSizeList", (req, res, next) => {
 
     console.log(req.body);
@@ -257,52 +295,86 @@ router.post("/SaveAddProducts", (req, res, next) => {
                 if (err) {
                     console.log("Error in store.js", err);
                 } else {
-
+                    if(req.body.multi.length >0){
+                        for (let i = 0; i < req.body.multi.length; i++) {
+                           
+                            db.executeSql("INSERT INTO `images`(`productid`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
+                                if (err) {
+                                    console.log("Error in store.js", err);
+                                } else { 
+                                    if(i ==req.body.multi.length-1){
+                                        res.json("success");
+                                    }
+                                }
+                            });
+                        }
+                    }
                 }
             })
         }
-        for (let i = 0; i < req.body.multi.length; i++) {
-            console.log(req.body.multi, 'im in multi')
-            db.executeSql("INSERT INTO `images`(`productid`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
-                if (err) {
-                    console.log("Error in store.js", err);
-                } else { }
-            });
-        }
-        res.json("success");
+       
+       
     }
     else {
-        db.executeSql("UPDATE `product` SET `productName`='" + req.body.productName + "',`brandName`='" + req.body.brandName + "',`manufacturerName`='" + req.body.manufacturerName + "',`productCode`=" + req.body.productCode + ",`startRating`=" + req.body.startRating + ",`productSRNumber`=" + req.body.productSRNumber + ",`productPrice`=" + req.body.productPrice + ",`discountPrice`=" + req.body.discountPrice + ",`emiOptions`=" + req.body.emiOptiions + ",`avibilityStatus`=" + req.body.avibilityStatus + ",`descripition`='" + req.body.descripition + "',`relatedProduct`='" + req.body.relatedProduct + "',`productSize`='" + req.body.productSize + "',`itemWeight`='" + req.body.itemWeight + "',`isActive`=" + req.body.isActive + ",`mainCategory`=" + req.body.mainCategory + ",`category`=" + req.body.category + ",`subCategory`=" + req.body.subCategory + ",`productMainImage`=" + req.body.productMainImage + ",`updateddate`=CURRENT_TIMESTAMP,`taxslab`='" + req.body.taxslab + "' WHERE id=" + req.body.id, function (data, err) {
+        console.log("in update");
+        db.executeSql("UPDATE `productmaster` SET `mainCategory`="+req.body.mainCategory+",`category`="+req.body.category+",`subCategory`='"+req.body.subCategory+"',`productName`='"+req.body.productName+"',`brandName`='"+req.body.brandName+"',`manufacturerName`='"+req.body.manufacturerName+"',`productCode`='"+req.body.productCode+"',`productSRNumber`='"+req.body.productSRNumber+"',`descripition`='"+req.body.descripition+"',`productDimension`='"+req.body.productDimension+"',`itemWeight`='"+req.body.itemWeight+"',`taxslab`='"+req.body.taxslab+"',`emiOptions`='"+req.body.emiOptions+"',`avibilityStatus`='"+req.body.avibilityStatus+"',`relatedProduct`='"+req.body.relatedProduct+"',`isNewArrival`='"+req.body.isNewArrival+"',`isBestProduct`='"+req.body.isBestProduct+"',`isHot`='"+req.body.isHot+"',`isOnSale`='"+req.body.isOnSale+"',`startRating`='"+req.body.startRating+"',`isActive`='"+req.body.isActive+"',`updateddate`='CURRENT_TIMESTAMP' WHERE maintag="+req.body.maintag, function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                return res.json(data);
+                if(req.body.productMainImage.length >0){
+                    db.executeSql("delete from images where productid="+req.body.maintag,function(data1,err){
+                        for (let i = 0; i < req.body.productMainImage.length; i++) {
+                            db.executeSql("INSERT INTO `images`(`productid`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productMainImage[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
+                                if (err) {
+                                    console.log("Error in store.js", err);
+                                } else { 
+                                    if(i ==(req.body.productMainImage.length-1)){
+                                        res.json("success");
+                                    }
+                                }
+                            });
+                        }
+                    })
+                }
+                
+                
             }
         });
     }
 
 });
+
 router.post("/SaveBulkProductsUpload", (req, res, next) => {
+    console.log(req.body)
     for (let i = 0; i < req.body.length; i++) {
         db.executeSql("INSERT INTO `productmaster`(`maintag`,`mainCategory`, `category`, `subCategory`, `productName`, `brandName`, `manufacturerName`, `productCode`, `productSRNumber`, `productPrice`, `productPer`, `discountPrice`, `quantity`, `size`, `color`, `descripition`, `productDimension`, `itemWeight`, `taxslab`, `emiOptions`, `avibilityStatus`, `relatedProduct`,`startRating`, `isActive`, `createddate`)VALUES(" + req.body[i].maintag + "," + req.body[i].mainCategory + "," + req.body[i].category + "," + req.body[i].subCategory + ",'" + req.body[i].productName + "','" + req.body[i].brandName + "','" + req.body[i].manufacturerName + "','" + req.body[i].productCode + "','" + req.body[i].productSRNumber + "'," + req.body[i].productPrice + "," + req.body[i].productPer + "," + req.body[i].discountPrice + "," + req.body[i].quantity + ",'" + req.body[i].size + "','" + req.body[i].color + "','" + req.body[i].descripition + "','" + req.body[i].productDimension + "','" + req.body[i].itemWeight + "'," + req.body[i].taxslab + "," + req.body[i].emiOptions + "," + req.body[i].avibilityStatus + "," + req.body[i].relatedProduct + "," + req.body[i].startRating + ",false,CURRENT_TIMESTAMP);", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
+                if(i ==  (req.body.length-1)){
+                    return res.json('success');
+                }
             }
         })
     }
-    return res.json('success');
+   
 });
 router.post("/SaveBulkProductsImages", (req, res, next) => {
+    console.log("here saving");
+    console.log(req.body);
     for (let i = 0; i < req.body.multi.length; i++) {
         console.log(req.body.multi, 'im in multi')
         db.executeSql("INSERT INTO `images`(`productid`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
-            } else { }
+            } else { 
+                if(i ==  (req.body.multi.length-1)){
+                    return res.json('success');
+                }
+            }
         });
     }
-    return res.json('success');
+    // return res.json('success');
 });
 
 router.post("/AddRestockQuantity", (req, res, next) => {
@@ -315,50 +387,6 @@ router.post("/AddRestockQuantity", (req, res, next) => {
         }
     })
 });
-// router.post("/SaveAddProducts", (req, res, next) => {
-//     console.log(req.body)
-//     if (req.body.id == undefined || req.body.id == null) {
-//         db.executeSql("INSERT INTO `product`(`productName`,`brandName`,`manufacturerName`,`productCode`,`startRating`,`productSRNumber`,`productPrice`,`discountPrice`,`emiOptions`,`avibilityStatus`,`descripition`,`relatedProduct`,`productSize`,`itemWeight`,`isActive`,`mainCategory`,`category`,`subCategory`,`productMainImage`,`createddate`,`taxslab`)VALUES('" + req.body.productName + "','" + req.body.brandName + "','" + req.body.manufacturerName + "','" + req.body.productCode + "'," + req.body.startRating + ",'" + req.body.productSRNumber + "','" + req.body.productPrice + "','" + req.body.discountPrice + "'," + req.body.emiOptiions + "," + req.body.avibilityStatus + ",'" + req.body.descripition + "'," + req.body.relatedProduct + ",'" + req.body.productSize + "','" + req.body.itemWeight + "'," + req.body.isActive + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productMainImage + "',CURRENT_TIMESTAMP,'" + req.body.taxslab + "');", function (data, err) {
-//             if (err) {
-//                 console.log("Error in store.js", err);
-//             } else {
-//                 db.executeSql("SELECT id FROM product ORDER BY createddate DESC LIMIT 1", function (data1, err) {
-//                     if (err) {
-//                         console.log("Error in store.js", err);
-//                     } else {
-//                         console.log("CCCFFFFGF", req.body.selectedSize);
-//                         req.body.selectedSize.forEach(element => {
-//                             db.executeSql("INSERT INTO `quantitywithsize`(`productid`,`quantity`,`size`,`color`,`stockdate`,`productprice`,`discountprice`,`discountper`)VALUES(" + data1[0].id + "," + element.quantity + ",'" + element.selsize + "','" + element.color + "',CURRENT_TIMESTAMP," + element.mainPrice + "," + element.discountPrice + "," + element.discountPerc + ");", function (data, err) {
-//                                 if (err) {
-//                                     console.log("Error in store.js", err);
-//                                 } else {
-//                                     console.log(req.body.multi)
-//                                 }
-//                             });
-//                         })
-//                         for (let i = 0; i < req.body.multi.length; i++) {
-//                             db.executeSql("INSERT INTO `images`(`mainCategoryId`,`productid`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.mainCategory + "," + data1[0].id + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
-//                                 if (err) {
-//                                     console.log("Error in store.js", err);
-//                                 } else { }
-//                             });
-//                         }
-//                     }
-//                 });
-//             }
-//         })
-//         res.json("success");
-//     }
-//     else {
-//         db.executeSql("UPDATE `product` SET `productName`='" + req.body.productName + "',`brandName`='" + req.body.brandName + "',`manufacturerName`='" + req.body.manufacturerName + "',`productCode`=" + req.body.productCode + ",`startRating`=" + req.body.startRating + ",`productSRNumber`=" + req.body.productSRNumber + ",`productPrice`=" + req.body.productPrice + ",`discountPrice`=" + req.body.discountPrice + ",`emiOptions`=" + req.body.emiOptiions + ",`avibilityStatus`=" + req.body.avibilityStatus + ",`descripition`='" + req.body.descripition + "',`relatedProduct`='" + req.body.relatedProduct + "',`productSize`='" + req.body.productSize + "',`itemWeight`='" + req.body.itemWeight + "',`isActive`=" + req.body.isActive + ",`mainCategory`=" + req.body.mainCategory + ",`category`=" + req.body.category + ",`subCategory`=" + req.body.subCategory + ",`productMainImage`=" + req.body.productMainImage + ",`updateddate`=CURRENT_TIMESTAMP,`taxslab`='"+req.body.taxslab+"' WHERE id=" + req.body.id, function (data, err) {
-//             if (err) {
-//                 console.log("Error in store.js", err);
-//             } else {
-//                 return res.json(data);
-//             }
-//         });
-//     }
-// });
 router.post("/UpdateReviews", (req, res, next) => {
     console.log(req.body)
     db.executeSql("UPDATE  `ratings` SET rating=" + req.body.rating + ",comment='" + req.body.comment + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
@@ -385,7 +413,7 @@ router.get("/RemoveReviews/:id", (req, res, next) => {
 router.get("/RemoveProduct/:id", (req, res, next) => {
 
     console.log(req.params.id);
-    db.executeSql("Delete from product where id=" + req.params.id, function (data, err) {
+    db.executeSql("Delete from productmaster where id=" + req.params.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -537,14 +565,14 @@ router.post("/RemoveMobileBanners", (req, res, next) => {
 
 router.post("/getFilterProductList", (req, res, next) => {
     console.log(req.body);
-    db.executeSql("select * from productmaster  where mainCategory=" + req.body.maincatid + " OR category=" + req.body.catid + " OR subCategory=" + req.body.subid + ";", function (data, err) {
+    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.mainCategory=" + req.body.maincatid + " OR p.category=" + req.body.catid + " OR p.subCategory=" + req.body.subid + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
             // return res.json(data);
             if(data.length >0){
                 data.forEach((element,ind) => {
-                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -562,13 +590,13 @@ router.post("/getFilterProductList", (req, res, next) => {
 });
 router.post("/GetAllFilterProduct", (req, res, next) => {
     if (req.body.filter == 'hot') {
-        db.executeSql("select * from productmaster where isHot=1", function (data, err) {
+        db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.isHot=1", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
                 if(data.length >0){
                     data.forEach((element,ind) => {
-                        db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
@@ -584,13 +612,13 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
         });
     }
     else if (req.body.filter == 'best') {
-        db.executeSql("select * from productmaster where isBestProduct=1", function (data, err) {
+        db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.isBestProduct=1", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
                 if(data.length >0){
                     data.forEach((element,ind) => {
-                        db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
@@ -606,13 +634,13 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
         });
     }
     else if (req.body.filter == 'sale') {
-        db.executeSql("select * from productmaster where isOnSale=1", function (data, err) {
+        db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.isOnSale=1", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
                 if(data.length >0){
                     data.forEach((element,ind) => {
-                        db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
@@ -628,13 +656,13 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
         });
     }
     else {
-        db.executeSql("select * from productmaster where isNewArrival=1", function (data, err) {
+        db.executeSql("sselect p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.isNewArrival=1", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
                 if(data.length >0){
                     data.forEach((element,ind) => {
-                        db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {

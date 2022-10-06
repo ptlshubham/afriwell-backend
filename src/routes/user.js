@@ -71,19 +71,33 @@ router.get("/GetUserAddress/:id", (req, res, next) => {
 });
 
 router.post("/getOrdersForDashboard", (req, res, next) => {
-    db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.productSize,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.productMainImage,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale from orders o join product p on o.productid=p.id where o.userid=" + req.body.id, function (data, err) {
+    db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as productId,p.maintag,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale from orders o join productmaster p on o.productid=p.id where o.userid=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            // return res.json(data);
+            if(data.length >0){
+                data.forEach((element,ind) => {
+                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            element.productMainImage = data1;
+                            if(data.length == (ind+1)){
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
+            }
         }
     });
 });
 
 
 router.post("/saveAddToCart", (req, res, next) => {
-     console.log(req.body[0].userid);
-    db.executeSql("INSERT INTO `cartlist`(`userid`,`productid`,`quantity`,`createddate`)VALUES('" + req.body[0].userid + "'," + req.body[0].product.id + "," + req.body[0].quantity + ",CURRENT_TIMESTAMP);", function (data, err) {
+     console.log(req.body[0]);
+    db.executeSql("INSERT INTO `cartlist`(`userid`,`productid`,`quantity`,`createddate`)VALUES('" + req.body[0].userid + "'," + req.body[0].product.productId + "," + req.body[0].quantity + ",CURRENT_TIMESTAMP);", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -130,7 +144,7 @@ router.post("/saveUserOrders", (req, res, next) => {
                 //         }
                 //         data[0].soldquantity = data[0].soldquantity + req.body.productid[0].quantity;
                 //         console.log("soldded=", req.body.productid[0].quantity);
-                //         db.executeSql("update `ecommerce`.`quantitywithsize` SET soldquantity=" + data[0].soldquantity + " WHERE productid=" + req.body.productid[0].productid + " and size='" + req.body.productid[0].size + "'", function (data, err) {
+                //         db.executeSql("update   `quantitywithsize` SET soldquantity=" + data[0].soldquantity + " WHERE productid=" + req.body.productid[0].productid + " and size='" + req.body.productid[0].size + "'", function (data, err) {
                 //             if (err) {
                 //                 console.log("Error in store.js", err);
                 //             } else {
@@ -158,7 +172,7 @@ router.post("/saveUserOrders", (req, res, next) => {
                 //         }
                 //         data[0].soldquantity = data[0].soldquantity + req.body.productid[0].quantity;
                 //         console.log("soldded=", req.body.productid[0].quantity);
-                //         db.executeSql("update `ecommerce`.`quantitywithsize` SET soldquantity=" + data[0].soldquantity + " WHERE productid=" + req.body.productid[0].productid + " and size='" + req.body.productid[0].size + "'", function (data, err) {
+                //         db.executeSql("update   `quantitywithsize` SET soldquantity=" + data[0].soldquantity + " WHERE productid=" + req.body.productid[0].productid + " and size='" + req.body.productid[0].size + "'", function (data, err) {
                 //             if (err) {
                 //                 console.log("Error in store.js", err);
                 //             } else {
@@ -188,7 +202,7 @@ router.post("/saveUserOrders", (req, res, next) => {
                 //                             }
                 //                             data[0].soldquantity = data[0].soldquantity + req.body.productid[0].quantity;
                 //                             console.log("soldded=", req.body.productid[0].quantity);
-                //                             db.executeSql("update `ecommerce`.`quantitywithsize` SET soldquantity=" + data[0].soldquantity + " WHERE productid=" + req.body.productid[i].productid + " and size='" + req.body.productid[i].size + "'", function (data, err) {
+                //                             db.executeSql("update   `quantitywithsize` SET soldquantity=" + data[0].soldquantity + " WHERE productid=" + req.body.productid[i].productid + " and size='" + req.body.productid[i].size + "'", function (data, err) {
                 //                                 if (err) {
                 //                                     console.log("Error in store.js", err);
                 //                                 } else {
@@ -211,13 +225,13 @@ router.post("/saveUserOrders", (req, res, next) => {
 });
 router.get("/GetProductList", (req, res, next) => {
     console.log("here");
-    db.executeSql("select * from productmaster", function (data, err) {
+    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category;", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
             if(data.length >0){
                 data.forEach((element,ind) => {
-                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -235,13 +249,13 @@ router.get("/GetProductList", (req, res, next) => {
 
 router.post("/GetSimilarProductList", (req, res, next) => {
 
-    db.executeSql("select * from productmaster where category=" + req.body.id, function (data, err) {
+    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.category=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
             if(data.length >0){
                 data.forEach((element,ind) => {
-                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -272,7 +286,7 @@ router.get("/GetCategoryList/:id", (req, res, next) => {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+             res.json(data);
         }
     });
 });
@@ -289,18 +303,32 @@ router.get("/GetProductImages/:id", (req, res, next) => {
 });
 router.get("/GetCartList/:id", (req, res, next) => {
     console.log(req.params.id)
-    db.executeSql("select cl.id, cl.userid,cl.productid,cl.quantity,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition,p.productMainImage from cartlist cl join product p on cl.productid=p.id where cl.userid='" + req.params.id + "' ", function (data, err) {
+    db.executeSql("select cl.id, cl.userid,cl.productid,cl.quantity,p.id as ProductId,p.maintag,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition from cartlist cl join productmaster p on cl.productid=p.id where cl.userid='" + req.params.id + "' ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            if(data.length >0){
+                console.log(data)
+                data.forEach((element,ind) => {
+                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            element.productMainImage = data1;
+                            if(data.length == (ind+1)){
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
+            }else{res.json('empty')}
         }
     });
 });
 
 
 router.get("/GetWishList", (req, res, next) => {
-    db.executeSql("select wl.id, wl.userid,wl.productid,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition,p.productMainImage from wishlist wl join product p on wl.productid=p.id ", function (data, err) {
+    db.executeSql("select wl.id, wl.userid,wl.productid,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition from wishlist wl join productmaster p on wl.productid=p.id ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -309,13 +337,13 @@ router.get("/GetWishList", (req, res, next) => {
     });
 });
 router.get("/GetProductDetails/:id", (req, res, next) => {
-    db.executeSql("select * from productmaster where id =" + req.params.id, function (data, err) {
+    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c  on c.id = p.category where p.id =" + req.params.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
             if(data.length >0){
                 data.forEach((element,ind) => {
-                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -333,13 +361,13 @@ router.get("/GetProductDetails/:id", (req, res, next) => {
 
 router.get("/GetBestProduct", (req, res, next) => {
 
-    db.executeSql("select * from productmaster where isBestProduct=1", function (data, err) {
+    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category  where p.isBestProduct=1", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
             if(data.length >0){
                 data.forEach((element,ind) => {
-                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -357,13 +385,13 @@ router.get("/GetBestProduct", (req, res, next) => {
 
 router.get("/GetNewArrivalProduct", (req, res, next) => {
 
-    db.executeSql("select * from productmaster where isNewArrival=1", function (data, err) {
+    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c  on c.id = p.category where p.isNewArrival=1", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
             if(data.length >0){
                 data.forEach((element,ind) => {
-                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -381,13 +409,13 @@ router.get("/GetNewArrivalProduct", (req, res, next) => {
 
 router.get("/GetSaleProduct", (req, res, next) => {
 
-    db.executeSql("select * from productmaster where isOnSale=1", function (data, err) {
+    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c  on c.id = p.category where p.isOnSale=1", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
             if(data.length >0){
                 data.forEach((element,ind) => {
-                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -405,13 +433,13 @@ router.get("/GetSaleProduct", (req, res, next) => {
 
 router.get("/GetHotProduct", (req, res, next) => {
 
-    db.executeSql("select * from productmaster where isHot=1", function (data, err) {
+    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.isHot=1", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
             if(data.length >0){
                 data.forEach((element,ind) => {
-                    db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -525,7 +553,7 @@ router.get("/GetMainCategory/:id", (req, res, next) => {
     });
 });
 router.post("/UpdateMainCategory", (req, res, next) => {
-    db.executeSql("UPDATE `ecommerce`.`category` SET name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
+    db.executeSql("UPDATE   `category` SET name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -534,7 +562,7 @@ router.post("/UpdateMainCategory", (req, res, next) => {
     });
 });
 router.post("/UpdateCategory", (req, res, next) => {
-    db.executeSql("UPDATE `ecommerce`.`category` SET parent=" + req.body.parent + ",name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
+    db.executeSql("UPDATE   `category` SET parent=" + req.body.parent + ",name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -544,7 +572,7 @@ router.post("/UpdateCategory", (req, res, next) => {
 });
 
 router.get("/RemoveMainCategory/:id", (req, res, next) => {
-    db.executeSql("UPDATE `ecommerce`.`category` SET updateddate=CURRENT_TIMESTAMP,isactive=0 WHERE id=" + req.params.id + ";", function (data, err) {
+    db.executeSql("UPDATE   `category` SET updateddate=CURRENT_TIMESTAMP,isactive=0 WHERE id=" + req.params.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -562,44 +590,10 @@ router.get("/GetWebBanner", (req, res, next) => {
     });
 });
 
-router.post("/SaveAddProducts", (req, res, next) => {
-    // console.log(req.body);
-    db.executeSql("INSERT INTO `product`(`productName`,`brandName`,`manufacturerName`,`productCode`,`startRating`,`productSRNumber`,`productPrice`,`discountPrice`,`emiOptions`,`avibilityStatus`,`descripition`,`relatedProduct`,`productSize`,`itemWeight`,`isActive`,`mainCategory`,`category`,`subCategory`,`productMainImage`,`createddate`)VALUES('" + req.body.productName + "','" + req.body.brandName + "','" + req.body.manufacturerName + "'," + req.body.productCode + "," + req.body.startRating + ",'" + req.body.productSRNumber + "'," + req.body.productPrice + "," + req.body.discountPrice + "," + req.body.emiOptiions + "," + req.body.avibilityStatus + ",'" + req.body.descripition + "'," + req.body.relatedProduct + ",'" + req.body.productSize + "','" + req.body.itemWeight + "'," + req.body.isActive + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productMainImage + "',CURRENT_TIMESTAMP);", function (data, err) {
-        if (err) {
-            console.log("Error in store.js", err);
-        } else {
-            console.log(data);
-            db.executeSql("SELECT id FROM product ORDER BY createddate DESC LIMIT 1", function (data1, err) {
-                if (err) {
-                    console.log("Error in store.js", err);
-                } else {
-                    console.log(req.body.selectedSize);
-                    req.body.selectedSize.forEach(element => {
-                        db.executeSql("INSERT INTO `quantitywithsize`(`productid`,`quantity`,`size`)VALUES(" + data1[0].id + ",'" + element.quantity + "','" + element.selsize + "');", function (data, err) {
-                            if (err) {
-                                console.log("Error in store.js", err);
-                            } else {
 
-                            }
-                        });
-
-                    })
-
-
-                }
-            });
-
-        }
-        // req.body.addSelectFields.forEach(element=>{
-
-        //     });
-
-    })
-    res.json("success");
-});
 router.post("/UpdateReviews", (req, res, next) => {
     // console.log(req.body)
-    db.executeSql("UPDATE `ecommerce`.`ratings` SET rating=" + req.body.rating + ",comment='" + req.body.comment + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
+    db.executeSql("UPDATE   `ratings` SET rating=" + req.body.rating + ",comment='" + req.body.comment + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -644,14 +638,14 @@ router.post("/GetNavbarRoutedProducts", (req, res, next) => {
     console.log("herde");
     // console.log(req.body);
     if (req.body.subid != undefined) {
-        db.executeSql("select * from productmaster where subCategory=" + req.body.subid, function (data, err) {
+        db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category; where p.subCategory=" + req.body.subid, function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
                 // console.log(data);
-                return res.json(data); if(data.length >0){
+                if(data.length >0){
                     data.forEach((element,ind) => {
-                        db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
@@ -667,13 +661,13 @@ router.post("/GetNavbarRoutedProducts", (req, res, next) => {
         });
     }
     else {
-        db.executeSql("select * from productmaster where category=" + req.body.catid, function (data, err) {
+        db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.category=" + req.body.catid, function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
                 if(data.length >0){
                     data.forEach((element,ind) => {
-                        db.executeSql("select * from images where productid=" + element.id, function (data1, err) {
+                        db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
