@@ -15,7 +15,7 @@ router.post("/SaveUserRegister", midway.checkToken, (req, res, next) => {
     //     })
     // })
     console.log(req.body.dateofbirth);
-    db.executeSql("INSERT INTO `user`(`firstname`,`middlename`,`lastname`,`email`,`password`,`dateofbirth`,`gender`,`contactnumber`,`isactive`,`createddate`)VALUES('" + req.body.firstname + "','" + req.body.middlename + "','" + req.body.lastname + "','" + req.body.email + "','" + req.body.password + "',CURRENTTIMESTAMP," + req.body.gender + "," + req.body.contactnumber + "," + req.body.isactive + ",CURRENT_TIMESTAMP);", function (data, err) {
+    db.executeSql("INSERT INTO `user`(`firstname`,`middlename`,`lastname`,`email`,`password`,`dateofbirth`,`gender`,`contactnumber`,`isactive`,`createddate`)VALUES('" + req.body.firstname + "','" + req.body.middlename + "','" + req.body.lastname + "','" + req.body.email + "','" + req.body.password + "',CURRENTTIMESTAMP," + req.body.gender + ",'" + req.body.contactnumber + "'," + req.body.isactive + ",CURRENT_TIMESTAMP);", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
