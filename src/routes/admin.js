@@ -233,10 +233,32 @@ router.post("/ChangeOrdersStatus", (req, res, next) => {
 });
 router.get("/GetProductList", (req, res, next) => {
 
-    db.executeSql("SELECT * FROM `productmaster` pm join category c on c.id = pm.category;", function (data, err) {
+    // db.executeSql("SELECT * FROM `productmaster` pm join category c on c.id = pm.category;", function (data, err) {
+    //     if (err) {
+    //         console.log("Error in store.js", err);
+    //     } else {
+    //         if (data.length > 0) {
+    //             data.forEach((element, ind) => {
+    //                 db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+    //                     if (err) {
+    //                         console.log("Error in store.js", err);
+    //                     } else {
+    //                         element.productMainImage = data1;
+    //                         if (data.length == (ind + 1)) {
+    //                             res.json(data);
+    //                         }
+    //                     }
+    //                 });
+    //             });
+    //         }
+    //     }
+    // });
+
+    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
+            // return res.json(data);
             if (data.length > 0) {
                 data.forEach((element, ind) => {
                     db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
@@ -251,6 +273,7 @@ router.get("/GetProductList", (req, res, next) => {
                     });
                 });
             }
+
         }
     });
 });
@@ -421,13 +444,7 @@ router.get("/RemoveProduct/:id", (req, res, next) => {
                 if (err) {
                     console.log("Error in store.js", err);
                 } else {
-                    db.executeSql("Delete from quantitywithsize where id=" + req.params.id, function (data, err) {
-                        if (err) {
-                            console.log("Error in store.js", err);
-                        } else {
-                            return res.json(data);
-                        }
-                    });
+                    return res.json(data);
                 }
             });
         }
@@ -915,9 +932,8 @@ router.post("/saveEmioption", (req, res, next) => {
 
 //filter apis
 router.post("/addToNewArrivals", (req, res, next) => {
-   
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update  `productmaster` SET isNewArrival=true,isBestProduct=false,isHot=false,isOnSale=false where id=" + req.body[i].maintag, function (data, err) {
+        db.executeSql("update  `productmaster` SET isNewArrival=true,isBestProduct=false,isHot=false,isOnSale=false where id=" + req.body[i].productId, function (data, err) {
             if (err) {
                 console.log(err);
 
@@ -932,7 +948,7 @@ router.post("/addToNewArrivals", (req, res, next) => {
 
 router.post("/addToBestProduct", (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update productmaster SET isNewArrival=false,isBestProduct=true,isHot=false,isOnSale=false where id=" + req.body[i].maintag, function (data, err) {
+        db.executeSql("update productmaster SET isNewArrival=false,isBestProduct=true,isHot=false,isOnSale=false where id=" + req.body[i].productId, function (data, err) {
             if (err) {
                 console.log(err);
 
@@ -946,7 +962,7 @@ router.post("/addToBestProduct", (req, res, next) => {
 });
 router.post("/addToHotProduct", (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update  `productmaster` SET isNewArrival=false,isBestProduct=false,isHot=true,isOnSale=false where id=" + req.body[i].maintag, function (data, err) {
+        db.executeSql("update  `productmaster` SET isNewArrival=false,isBestProduct=false,isHot=true,isOnSale=false where id=" + req.body[i].productId, function (data, err) {
             if (err) {
                 console.log(err);
 
@@ -960,7 +976,7 @@ router.post("/addToHotProduct", (req, res, next) => {
 });
 router.post("/addToOnSale", (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update  `productmaster` SET isNewArrival=false,isBestProduct=false,isHot=false,isOnSale=true where id=" + req.body[i].maintag, function (data, err) {
+        db.executeSql("update  `productmaster` SET isNewArrival=false,isBestProduct=false,isHot=false,isOnSale=true where id=" + req.body[i].productId, function (data, err) {
             if (err) {
                 console.log(err);
 
