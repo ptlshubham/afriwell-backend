@@ -11,7 +11,7 @@ const { equal } = require("assert");
 
 
 router.post("/SaveMainCategory", (req, res, next) => {
-    console.log(req.body);
+
     db.executeSql("INSERT INTO `category`(`name`,`parent`,`bannersimage`,`createddate`,`updateddate`,`isactive`)VALUES('" + req.body.name + "'," + req.body.parent + ",'" + req.body.bannersimage + "',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP," + req.body.isactive + ");", function (data, err) {
         console.log(req.err)
         if (err) {
@@ -94,14 +94,14 @@ router.post("/GetOrdersList", (req, res, next) => {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            if(data.length >0){
-                data.forEach((element,ind) => {
+            if (data.length > 0) {
+                data.forEach((element, ind) => {
                     db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
                             element.productMainImage = data1;
-                            if(data.length == (ind+1)){
+                            if (data.length == (ind + 1)) {
                                 res.json(data);
                             }
                         }
@@ -135,13 +135,13 @@ router.post("/GetOrdersList", (req, res, next) => {
 });
 
 
-router.post("/saveShiprocketData",(req,res,next)=>{
+router.post("/saveShiprocketData", (req, res, next) => {
     console.log("hdhdhudhuduyhduhuydhuhu")
-    db.executeSql("INSERT INTO `order_of_shiprocket`( `order_id_system`, `order_id_shiprocket`, `status`, `status_code`, `created_date`) VALUES ("+req.body.system_order_id+","+req.body.order_id+",'"+req.body.status+"',"+req.body.status_code+",CURRENT_TIMESTAMP)", function (data, err){
+    db.executeSql("INSERT INTO `order_of_shiprocket`( `order_id_system`, `order_id_shiprocket`, `status`, `status_code`, `created_date`) VALUES (" + req.body.system_order_id + "," + req.body.order_id + ",'" + req.body.status + "'," + req.body.status_code + ",CURRENT_TIMESTAMP)", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-             res.json(data);
+            res.json(data);
         }
     })
 })
@@ -186,7 +186,7 @@ router.post("/UpdateMainCategory", (req, res, next) => {
     });
 });
 router.post("/UpdateCategory", (req, res, next) => {
-    console.log(req.body);
+
     db.executeSql("UPDATE  `category` SET parent=" + req.body.parent + ",bannersimage='" + req.body.bannerimage + "',name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -198,7 +198,7 @@ router.post("/UpdateCategory", (req, res, next) => {
 
 router.post("/UpdateOrdersStatus", (req, res, next) => {
     console.log('accept');
-    console.log(req.body);
+
     db.executeSql("UPDATE  `orders` SET status='" + req.body.status + "' WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -210,7 +210,7 @@ router.post("/UpdateOrdersStatus", (req, res, next) => {
 
 router.post("/AcceptUserOrders", (req, res, next) => {
     console.log('accept');
-    console.log(req.body);
+
     db.executeSql("UPDATE  `orders` SET status= 'Accepted' WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -222,7 +222,7 @@ router.post("/AcceptUserOrders", (req, res, next) => {
 
 router.post("/ChangeOrdersStatus", (req, res, next) => {
     console.log('accept');
-    console.log(req.body);
+
     db.executeSql("UPDATE  `orders` SET status= 'Accepted' WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -237,14 +237,14 @@ router.get("/GetProductList", (req, res, next) => {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            if(data.length >0){
-                data.forEach((element,ind) => {
+            if (data.length > 0) {
+                data.forEach((element, ind) => {
                     db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
                             element.productMainImage = data1;
-                            if(data.length == (ind+1)){
+                            if (data.length == (ind + 1)) {
                                 res.json(data);
                             }
                         }
@@ -257,7 +257,7 @@ router.get("/GetProductList", (req, res, next) => {
 
 router.post("/GetProductSizeList", (req, res, next) => {
 
-    console.log(req.body);
+
     db.executeSql("select * from quantitywithsize where productid=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -295,14 +295,14 @@ router.post("/SaveAddProducts", (req, res, next) => {
                 if (err) {
                     console.log("Error in store.js", err);
                 } else {
-                    if(req.body.multi.length >0){
+                    if (req.body.multi.length > 0) {
                         for (let i = 0; i < req.body.multi.length; i++) {
-                           
+
                             db.executeSql("INSERT INTO `images`(`productid`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
                                 if (err) {
                                     console.log("Error in store.js", err);
-                                } else { 
-                                    if(i ==req.body.multi.length-1){
+                                } else {
+                                    if (i == req.body.multi.length - 1) {
                                         res.json("success");
                                     }
                                 }
@@ -312,23 +312,23 @@ router.post("/SaveAddProducts", (req, res, next) => {
                 }
             })
         }
-       
-       
+
+
     }
     else {
         console.log("in update");
-        db.executeSql("UPDATE `productmaster` SET `mainCategory`="+req.body.mainCategory+",`category`="+req.body.category+",`subCategory`='"+req.body.subCategory+"',`productName`='"+req.body.productName+"',`brandName`='"+req.body.brandName+"',`manufacturerName`='"+req.body.manufacturerName+"',`productCode`='"+req.body.productCode+"',`productSRNumber`='"+req.body.productSRNumber+"',`descripition`='"+req.body.descripition+"',`productDimension`='"+req.body.productDimension+"',`itemWeight`='"+req.body.itemWeight+"',`taxslab`='"+req.body.taxslab+"',`emiOptions`='"+req.body.emiOptions+"',`avibilityStatus`='"+req.body.avibilityStatus+"',`relatedProduct`='"+req.body.relatedProduct+"',`isNewArrival`='"+req.body.isNewArrival+"',`isBestProduct`='"+req.body.isBestProduct+"',`isHot`='"+req.body.isHot+"',`isOnSale`='"+req.body.isOnSale+"',`startRating`='"+req.body.startRating+"',`isActive`='"+req.body.isActive+"',`updateddate`='CURRENT_TIMESTAMP' WHERE maintag="+req.body.maintag, function (data, err) {
+        db.executeSql("UPDATE `productmaster` SET `mainCategory`=" + req.body.mainCategory + ",`category`=" + req.body.category + ",`subCategory`='" + req.body.subCategory + "',`productName`='" + req.body.productName + "',`brandName`='" + req.body.brandName + "',`manufacturerName`='" + req.body.manufacturerName + "',`productCode`='" + req.body.productCode + "',`productSRNumber`='" + req.body.productSRNumber + "',`descripition`='" + req.body.descripition + "',`productDimension`='" + req.body.productDimension + "',`itemWeight`='" + req.body.itemWeight + "',`taxslab`='" + req.body.taxslab + "',`emiOptions`='" + req.body.emiOptions + "',`avibilityStatus`='" + req.body.avibilityStatus + "',`relatedProduct`='" + req.body.relatedProduct + "',`isNewArrival`='" + req.body.isNewArrival + "',`isBestProduct`='" + req.body.isBestProduct + "',`isHot`='" + req.body.isHot + "',`isOnSale`='" + req.body.isOnSale + "',`startRating`='" + req.body.startRating + "',`isActive`='" + req.body.isActive + "',`updateddate`='CURRENT_TIMESTAMP' WHERE maintag=" + req.body.maintag, function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                if(req.body.productMainImage.length >0){
-                    db.executeSql("delete from images where productid="+req.body.maintag,function(data1,err){
+                if (req.body.productMainImage.length > 0) {
+                    db.executeSql("delete from images where productid=" + req.body.maintag, function (data1, err) {
                         for (let i = 0; i < req.body.productMainImage.length; i++) {
                             db.executeSql("INSERT INTO `images`(`productid`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productMainImage[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
                                 if (err) {
                                     console.log("Error in store.js", err);
-                                } else { 
-                                    if(i ==(req.body.productMainImage.length-1)){
+                                } else {
+                                    if (i == (req.body.productMainImage.length - 1)) {
                                         res.json("success");
                                     }
                                 }
@@ -336,8 +336,8 @@ router.post("/SaveAddProducts", (req, res, next) => {
                         }
                     })
                 }
-                
-                
+
+
             }
         });
     }
@@ -351,24 +351,24 @@ router.post("/SaveBulkProductsUpload", (req, res, next) => {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                if(i ==  (req.body.length-1)){
+                if (i == (req.body.length - 1)) {
                     return res.json('success');
                 }
             }
         })
     }
-   
+
 });
 router.post("/SaveBulkProductsImages", (req, res, next) => {
     console.log("here saving");
-    console.log(req.body);
+
     for (let i = 0; i < req.body.multi.length; i++) {
         console.log(req.body.multi, 'im in multi')
         db.executeSql("INSERT INTO `images`(`productid`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
-            } else { 
-                if(i ==  (req.body.multi.length-1)){
+            } else {
+                if (i == (req.body.multi.length - 1)) {
                     return res.json('success');
                 }
             }
@@ -499,7 +499,7 @@ router.post("/getProductDetailImage", (req, res, next) => {
     });
 })
 router.post("/SaveWebBanners", (req, res, next) => {
-    console.log(req.body);
+
     db.executeSql("INSERT INTO `webbanners`(`name`,`bannersimage`,`status`,`title`,`subtitle`)VALUES('" + req.body.name + "','" + req.body.bannersimage + "'," + req.body.status + ",'" + req.body.title + "','" + req.body.subtitle + "');", function (data, err) {
         if (err) {
             res.json("error");
@@ -519,7 +519,7 @@ router.post("/UpdateActiveWebBanners", (req, res, next) => {
     });
 });
 router.post("/SaveMobileBanners", (req, res, next) => {
-    console.log(req.body);
+
 
     db.executeSql("INSERT INTO `mobilebanners`(`name`,`bannersimage`,`status`)VALUES('" + req.body.name + "','" + req.body.bannersimage + "'," + req.body.status + ");", function (data, err) {
         if (err) {
@@ -564,20 +564,20 @@ router.post("/RemoveMobileBanners", (req, res, next) => {
 
 
 router.post("/getFilterProductList", (req, res, next) => {
-    console.log(req.body);
+
     db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.mainCategory=" + req.body.maincatid + " OR p.category=" + req.body.catid + " OR p.subCategory=" + req.body.subid + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
             // return res.json(data);
-            if(data.length >0){
-                data.forEach((element,ind) => {
+            if (data.length > 0) {
+                data.forEach((element, ind) => {
                     db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
                             element.productMainImage = data1;
-                            if(data.length == (ind+1)){
+                            if (data.length == (ind + 1)) {
                                 res.json(data);
                             }
                         }
@@ -594,14 +594,14 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                if(data.length >0){
-                    data.forEach((element,ind) => {
+                if (data.length > 0) {
+                    data.forEach((element, ind) => {
                         db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
                                 element.productMainImage = data1;
-                                if(data.length == (ind+1)){
+                                if (data.length == (ind + 1)) {
                                     res.json(data);
                                 }
                             }
@@ -616,14 +616,14 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                if(data.length >0){
-                    data.forEach((element,ind) => {
+                if (data.length > 0) {
+                    data.forEach((element, ind) => {
                         db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
                                 element.productMainImage = data1;
-                                if(data.length == (ind+1)){
+                                if (data.length == (ind + 1)) {
                                     res.json(data);
                                 }
                             }
@@ -638,14 +638,14 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                if(data.length >0){
-                    data.forEach((element,ind) => {
+                if (data.length > 0) {
+                    data.forEach((element, ind) => {
                         db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
                                 element.productMainImage = data1;
-                                if(data.length == (ind+1)){
+                                if (data.length == (ind + 1)) {
                                     res.json(data);
                                 }
                             }
@@ -660,14 +660,14 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                if(data.length >0){
-                    data.forEach((element,ind) => {
+                if (data.length > 0) {
+                    data.forEach((element, ind) => {
                         db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
                                 element.productMainImage = data1;
-                                if(data.length == (ind+1)){
+                                if (data.length == (ind + 1)) {
                                     res.json(data);
                                 }
                             }
@@ -777,7 +777,7 @@ router.post("/UploadMultiProductImage", (req, res, next) => {
 
 
 router.get("/RemoveRecentUoloadImage", (req, res, next) => {
-    console.log(req.body);
+
     db.executeSql("SELECT * FROM images ORDER BY createddate DESC LIMIT 1", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -896,7 +896,7 @@ router.post("/UploadMobileBannersImage", (req, res, next) => {
 });
 
 router.post("/saveEmioption", (req, res, next) => {
-    console.log(req.body);
+
     for (let i = 0; i < req.body.length; i++) {
         db.executeSql("INSERT INTO  `emi`(`bankid`,`months`,`intrest`,`isactive`,`createddate`,`updateddate`)VALUES(" + req.body[i].bankid + "," + req.body[i].months + "," + req.body[i].intrest + ",true,CURRENT_TIMESTAMP,NULL);", function (data, err) {
             if (err) {
@@ -915,9 +915,9 @@ router.post("/saveEmioption", (req, res, next) => {
 
 //filter apis
 router.post("/addToNewArrivals", (req, res, next) => {
-    console.log(req.body);
+   
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update  `product` SET isNewArrival=true,isBestProduct=false,isHot=false,isOnSale=false where id=" + req.body[i].id, function (data, err) {
+        db.executeSql("update  `productmaster` SET isNewArrival=true,isBestProduct=false,isHot=false,isOnSale=false where id=" + req.body[i].maintag, function (data, err) {
             if (err) {
                 console.log(err);
 
@@ -932,7 +932,7 @@ router.post("/addToNewArrivals", (req, res, next) => {
 
 router.post("/addToBestProduct", (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update  `product` SET isNewArrival=false,isBestProduct=true,isHot=false,isOnSale=false where id=" + req.body[i].id, function (data, err) {
+        db.executeSql("update productmaster SET isNewArrival=false,isBestProduct=true,isHot=false,isOnSale=false where id=" + req.body[i].maintag, function (data, err) {
             if (err) {
                 console.log(err);
 
@@ -946,7 +946,7 @@ router.post("/addToBestProduct", (req, res, next) => {
 });
 router.post("/addToHotProduct", (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update  `product` SET isNewArrival=false,isBestProduct=false,isHot=true,isOnSale=false where id=" + req.body[i].id, function (data, err) {
+        db.executeSql("update  `productmaster` SET isNewArrival=false,isBestProduct=false,isHot=true,isOnSale=false where id=" + req.body[i].maintag, function (data, err) {
             if (err) {
                 console.log(err);
 
@@ -960,7 +960,7 @@ router.post("/addToHotProduct", (req, res, next) => {
 });
 router.post("/addToOnSale", (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update  `product` SET isNewArrival=false,isBestProduct=false,isHot=false,isOnSale=true where id=" + req.body[i].id, function (data, err) {
+        db.executeSql("update  `productmaster` SET isNewArrival=false,isBestProduct=false,isHot=false,isOnSale=true where id=" + req.body[i].maintag, function (data, err) {
             if (err) {
                 console.log(err);
 
