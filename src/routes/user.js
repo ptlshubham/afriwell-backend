@@ -96,8 +96,8 @@ router.post("/getOrdersForDashboard", (req, res, next) => {
 
 
 router.post("/saveAddToCart", (req, res, next) => {
-    console.log(req.body[0]);
-    db.executeSql("INSERT INTO `cartlist`(`userid`,`productid`,`quantity`,`createddate`)VALUES('" + req.body[0].userid + "'," + req.body[0].product.productId + "," + req.body[0].quantity + ",CURRENT_TIMESTAMP);", function (data, err) {
+    console.log(req.body[0].product[0].product.productId);
+    db.executeSql("INSERT INTO `cartlist`(`userid`,`productid`,`quantity`,`createddate`)VALUES('" + req.body[0].userid + "'," + req.body[0].product[0].product.productId + "," + req.body[0].quantity + ",CURRENT_TIMESTAMP);", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -360,7 +360,6 @@ router.get("/GetProductDetails/:id", (req, res, next) => {
 });
 
 router.get("/GetBestProduct", (req, res, next) => {
-
     db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category  where p.isBestProduct=1", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -378,6 +377,8 @@ router.get("/GetBestProduct", (req, res, next) => {
                         }
                     });
                 });
+            }else{
+                res.json('empty')
             }
         }
     });
@@ -404,6 +405,9 @@ router.get("/GetNewArrivalProduct", (req, res, next) => {
                     });
                 });
             }
+            else{
+                res.json('empty');
+            }
         }
     });
 });
@@ -427,6 +431,8 @@ router.get("/GetSaleProduct", (req, res, next) => {
                         }
                     });
                 });
+            }else{
+                res.json('empty');
             }
         }
     });
@@ -451,6 +457,9 @@ router.get("/GetHotProduct", (req, res, next) => {
                         }
                     });
                 });
+            }
+            else{
+                res.json('empty');
             }
         }
     });

@@ -34,7 +34,7 @@ let secret='prnv';
 router.post('/authenticate', (req, res,next)=> {
     console.log("hello  im here");
     const body = req.body;
-    console.log(body);
+    console.log(req.body);
     var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
     var repass= salt +''+body.password;
     var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
