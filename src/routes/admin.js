@@ -111,27 +111,44 @@ router.post("/GetOrdersList", (req, res, next) => {
         }
     });
 
-    // db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as productId,p.maintag,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale from orders o join productmaster p on o.productid=p.id where o.userid=" + req.body.id, function (data, err) {
-    //     if (err) {
-    //         console.log("Error in store.js", err);
-    //     } else {
-    //         // return res.json(data);
-    //         if(data.length >0){
-    //             data.forEach((element,ind) => {
-    //                 db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
-    //                     if (err) {
-    //                         console.log("Error in store.js", err);
-    //                     } else {
-    //                         element.productMainImage = data1;
-    //                         if(data.length == (ind+1)){
-    //                             res.json(data);
-    //                         }
-    //                     }
-    //                 });
-    //             });
-    //         }
-    //     }    
-    // });
+});
+
+
+router.get("/getLowStockProduct",(req,res,next)=>{
+    db.executeSql("select * from productmaster where quantity<"+5, function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            res.json(data);        
+        }
+    });
+});
+
+
+
+router.get("/getTotalEarning",(req,res,next)=>{
+    db.executeSql("select * from productmaster where quantity<"+5, function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            res.json(data);        
+        }
+    });
+});
+
+
+
+
+router.get("/getTotalOrdersListURL", (req, res, next) => {
+    // console.log('ygyguhguft');
+    db.executeSql("select o.id,p.maintag,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition, ad.address ,ad.city,ad.state,ad.pincode,ad.contactnumber from orders o inner join productmaster p on o.productid=p.id inner join useraddress ad on ad.id = o.addressid ;", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            res.json(data);        
+        }
+    });
+
 });
 
 
