@@ -10,7 +10,7 @@ var crypto = require('crypto');
 const { equal } = require("assert");
 
 
-router.post("/SaveMainCategory", (req, res, next) => {
+router.post("/SaveMainCategory", midway.checkToken,(req, res, next) => {
 
     db.executeSql("INSERT INTO `category`(`name`,`parent`,`bannersimage`,`createddate`,`updateddate`,`isactive`)VALUES('" + req.body.name + "'," + req.body.parent + ",'" + req.body.bannersimage + "',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP," + req.body.isactive + ");", function (data, err) {
         console.log(req.err)
@@ -49,7 +49,7 @@ router.post("/SaveBankListCategory", (req, res, next) => {
     });
 });
 
-router.get("/GetClothsSize", (req, res, next) => {
+router.get("/GetClothsSize",midway.checkToken, (req, res, next) => {
     db.executeSql("select * from clothsize ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -59,7 +59,7 @@ router.get("/GetClothsSize", (req, res, next) => {
     });
 });
 
-router.get("/GetReviewList", (req, res, next) => {
+router.get("/GetReviewList",midway.checkToken, (req, res, next) => {
     db.executeSql("select * from ratings ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -68,7 +68,7 @@ router.get("/GetReviewList", (req, res, next) => {
         }
     });
 });
-router.get("/GetBankList", (req, res, next) => {
+router.get("/GetBankList",midway.checkToken, (req, res, next) => {
     db.executeSql("select * from banklist ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -78,7 +78,7 @@ router.get("/GetBankList", (req, res, next) => {
     });
 });
 
-router.get("/GetROIList", (req, res, next) => {
+router.get("/GetROIList",midway.checkToken, (req, res, next) => {
     db.executeSql("select e.id,e.bankid,e.months,e.intrest,b.id as BankId,b.bankname from emi e join banklist b on e.bankid=b.id", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -88,7 +88,7 @@ router.get("/GetROIList", (req, res, next) => {
     });
 });
 
-router.post("/GetOrdersList", (req, res, next) => {
+router.post("/GetOrdersList", midway.checkToken,(req, res, next) => {
     // console.log('ygyguhguft');
     db.executeSql("select o.id,p.maintag,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition, ad.address ,ad.city,ad.state,ad.pincode,ad.contactnumber from orders o inner join productmaster p on o.productid=p.id inner join useraddress ad on ad.id = o.addressid where o.status='" + req.body.status + "';", function (data, err) {
         if (err) {
@@ -114,7 +114,7 @@ router.post("/GetOrdersList", (req, res, next) => {
 });
 
 
-router.get("/getLowStockProduct",(req,res,next)=>{
+router.get("/getLowStockProduct",midway.checkToken,(req,res,next)=>{
     db.executeSql("select * from productmaster where quantity<"+5, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -126,7 +126,7 @@ router.get("/getLowStockProduct",(req,res,next)=>{
 
 
 
-router.get("/getTotalEarning",(req,res,next)=>{
+router.get("/getTotalEarning",midway.checkToken,(req,res,next)=>{
     db.executeSql("select * from productmaster where quantity<"+5, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -139,7 +139,7 @@ router.get("/getTotalEarning",(req,res,next)=>{
 
 
 
-router.get("/getTotalOrdersListURL", (req, res, next) => {
+router.get("/getTotalOrdersListURL",midway.checkToken, (req, res, next) => {
     // console.log('ygyguhguft');
     db.executeSql("select o.id,p.maintag,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition, ad.address ,ad.city,ad.state,ad.pincode,ad.contactnumber from orders o inner join productmaster p on o.productid=p.id inner join useraddress ad on ad.id = o.addressid ;", function (data, err) {
         if (err) {
@@ -163,7 +163,7 @@ router.post("/saveShiprocketData", (req, res, next) => {
     })
 })
 
-router.post("/RemoveROIList", (req, res, next) => {
+router.post("/RemoveROIList", midway.checkToken,(req, res, next) => {
 
     console.log(req.body.id);
     db.executeSql("Delete from emi where id=" + req.body.id, function (data, err) {
@@ -174,7 +174,7 @@ router.post("/RemoveROIList", (req, res, next) => {
         }
     });
 })
-router.get("/GetCustomerList", (req, res, next) => {
+router.get("/GetCustomerList", midway.checkToken,(req, res, next) => {
     db.executeSql("select * from user ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -183,7 +183,7 @@ router.get("/GetCustomerList", (req, res, next) => {
         }
     });
 });
-router.get("/GetMainCategory/:id", (req, res, next) => {
+router.get("/GetMainCategory/:id",midway.checkToken, (req, res, next) => {
     db.executeSql("select * from category where isactive=1 AND parent =" + req.params.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -192,7 +192,7 @@ router.get("/GetMainCategory/:id", (req, res, next) => {
         }
     });
 });
-router.post("/UpdateMainCategory", (req, res, next) => {
+router.post("/UpdateMainCategory",midway.checkToken, (req, res, next) => {
     console.log(req.body.bannersimage)
     db.executeSql("UPDATE `category` SET name='" + req.body.name + "',bannersimage='" + req.body.bannersimage + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
@@ -202,7 +202,7 @@ router.post("/UpdateMainCategory", (req, res, next) => {
         }
     });
 });
-router.post("/UpdateCategory", (req, res, next) => {
+router.post("/UpdateCategory",midway.checkToken, (req, res, next) => {
 
     db.executeSql("UPDATE  `category` SET parent=" + req.body.parent + ",bannersimage='" + req.body.bannerimage + "',name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
@@ -213,7 +213,7 @@ router.post("/UpdateCategory", (req, res, next) => {
     });
 });
 
-router.post("/UpdateOrdersStatus", (req, res, next) => {
+router.post("/UpdateOrdersStatus",midway.checkToken, (req, res, next) => {
     console.log('accept');
 
     db.executeSql("UPDATE  `orders` SET status='" + req.body.status + "' WHERE id=" + req.body.id + ";", function (data, err) {
@@ -225,7 +225,7 @@ router.post("/UpdateOrdersStatus", (req, res, next) => {
     });
 });
 
-router.post("/AcceptUserOrders", (req, res, next) => {
+router.post("/AcceptUserOrders",midway.checkToken, (req, res, next) => {
     console.log('accept');
 
     db.executeSql("UPDATE  `orders` SET status= 'Accepted' WHERE id=" + req.body.id + ";", function (data, err) {
@@ -237,7 +237,7 @@ router.post("/AcceptUserOrders", (req, res, next) => {
     });
 });
 
-router.post("/ChangeOrdersStatus", (req, res, next) => {
+router.post("/ChangeOrdersStatus",midway.checkToken, (req, res, next) => {
     console.log('accept');
 
     db.executeSql("UPDATE  `orders` SET status= 'Accepted' WHERE id=" + req.body.id + ";", function (data, err) {
@@ -327,11 +327,11 @@ router.get("/GetProductMasterTag", (req, res, next) => {
     });
 });
 
-router.post("/SaveAddProducts", (req, res, next) => {
+router.post("/SaveAddProducts",midway.checkToken, (req, res, next) => {
     console.log(req.body)
     if (req.body.id == undefined || req.body.id == null) {
         for (let i = 0; i < req.body.selectedSize.length; i++) {
-            db.executeSql("INSERT INTO `productmaster`(`maintag`,`mainCategory`, `category`, `subCategory`, `productName`, `brandName`, `manufacturerName`, `productCode`, `productSRNumber`, `productPrice`, `productPer`, `discountPrice`, `quantity`, `size`, `color`, `descripition`, `productDimension`, `itemWeight`, `taxslab`, `emiOptions`, `avibilityStatus`, `relatedProduct`,`startRating`, `isActive`, `createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productName + "','" + req.body.brandName + "','" + req.body.manufacturerName + "','" + req.body.productCode + "','" + req.body.productSRNumber + "','" + req.body.selectedSize[i].mainPrice + "','" + req.body.selectedSize[i].discountPerc + "','" + req.body.selectedSize[i].discountPrice + "','" + req.body.selectedSize[i].quantity + "','" + req.body.selectedSize[i].selsize + "','" + req.body.selectedSize[i].color + "','" + req.body.descripition + "','" + req.body.productSize + "','" + req.body.itemWeight + "','" + req.body.taxslab + "'," + req.body.emiOptiions + "," + req.body.avibilityStatus + "," + req.body.relatedProduct + "," + req.body.startRating + "," + req.body.isActive + ",CURRENT_TIMESTAMP);", function (data, err) {
+            db.executeSql("INSERT INTO `productmaster`(`maintag`,`mainCategory`, `category`, `subCategory`, `productName`, `brandName`, `manufacturerName`, `productCode`, `productSRNumber`, `productPrice`, `productPer`, `discountPrice`, `quantity`, `size`, `color`, `descripition`, `productDimension`, `itemWeight`, `taxslab`, `emiOptions`, `avibilityStatus`, `relatedProduct`,`startRating`, `isActive`, `createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productName + "','" + req.body.brandName + "','" + req.body.manufacturerName + "','" + req.body.productCode + "','" + req.body.productSRNumber + "','" + req.body.selectedSize[i].mainPrice + "','" + req.body.selectedSize[i].discountPerc + "','" + req.body.selectedSize[i].discountPrice + "','" + req.body.selectedSize[i].quantity + "','" + req.body.selectedSize[i].selsize + "','" + req.body.selectedSize[i].color + "','" + req.body.descripition + "','" + req.body.productSize + "','" + req.body.itemWeight + "','" + req.body.taxslab + "'," + req.body.emiOptions + "," + req.body.avibilityStatus + "," + req.body.relatedProduct + "," + req.body.startRating + "," + req.body.isActive + ",CURRENT_TIMESTAMP);", function (data, err) {
                 if (err) {
                     console.log("Error in store.js", err);
                 } else {
@@ -384,7 +384,7 @@ router.post("/SaveAddProducts", (req, res, next) => {
 
 });
 
-router.post("/SaveBulkProductsUpload", (req, res, next) => {
+router.post("/SaveBulkProductsUpload",midway.checkToken, (req, res, next) => {
     console.log(req.body)
     for (let i = 0; i < req.body.length; i++) {
         db.executeSql("INSERT INTO `productmaster`(`maintag`,`mainCategory`, `category`, `subCategory`, `productName`, `brandName`, `manufacturerName`, `productCode`, `productSRNumber`, `productPrice`, `productPer`, `discountPrice`, `quantity`, `size`, `color`, `descripition`, `productDimension`, `itemWeight`, `taxslab`, `emiOptions`, `avibilityStatus`, `relatedProduct`,`startRating`, `isActive`, `createddate`)VALUES(" + req.body[i].maintag + "," + req.body[i].mainCategory + "," + req.body[i].category + "," + req.body[i].subCategory + ",'" + req.body[i].productName + "','" + req.body[i].brandName + "','" + req.body[i].manufacturerName + "','" + req.body[i].productCode + "','" + req.body[i].productSRNumber + "'," + req.body[i].productPrice + "," + req.body[i].productPer + "," + req.body[i].discountPrice + "," + req.body[i].quantity + ",'" + req.body[i].size + "','" + req.body[i].color + "','" + req.body[i].descripition + "','" + req.body[i].productDimension + "','" + req.body[i].itemWeight + "'," + req.body[i].taxslab + "," + req.body[i].emiOptions + "," + req.body[i].avibilityStatus + "," + req.body[i].relatedProduct + "," + req.body[i].startRating + ",false,CURRENT_TIMESTAMP);", function (data, err) {
@@ -399,7 +399,7 @@ router.post("/SaveBulkProductsUpload", (req, res, next) => {
     }
 
 });
-router.post("/SaveBulkProductsImages", (req, res, next) => {
+router.post("/SaveBulkProductsImages",midway.checkToken, (req, res, next) => {
     console.log("here saving");
 
     for (let i = 0; i < req.body.multi.length; i++) {
@@ -417,7 +417,7 @@ router.post("/SaveBulkProductsImages", (req, res, next) => {
     // return res.json('success');
 });
 
-router.post("/AddRestockQuantity", (req, res, next) => {
+router.post("/AddRestockQuantity",midway.checkToken, (req, res, next) => {
     db.executeSql("UPDATE productmaster SET productPrice=" + req.body.productPrice + ",productPer=" + req.body.productPer + ",discountPrice=" + req.body.discountPrice + ",quantity=" + req.body.quantity + ",size='" + req.body.size + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -427,7 +427,7 @@ router.post("/AddRestockQuantity", (req, res, next) => {
         }
     })
 });
-router.post("/UpdateReviews", (req, res, next) => {
+router.post("/UpdateReviews",midway.checkToken, (req, res, next) => {
     console.log(req.body)
     db.executeSql("UPDATE  `ratings` SET rating=" + req.body.rating + ",comment='" + req.body.comment + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
@@ -439,7 +439,7 @@ router.post("/UpdateReviews", (req, res, next) => {
 });
 
 
-router.get("/RemoveReviews/:id", (req, res, next) => {
+router.get("/RemoveReviews/:id", midway.checkToken,(req, res, next) => {
 
     console.log(req.params.id);
     db.executeSql("Delete from ratings where id=" + req.params.id, function (data, err) {
@@ -450,7 +450,7 @@ router.get("/RemoveReviews/:id", (req, res, next) => {
         }
     });
 })
-router.get("/RemoveProduct/:id", (req, res, next) => {
+router.get("/RemoveProduct/:id",midway.checkToken, (req, res, next) => {
 
     console.log(req.params.id);
     db.executeSql("Delete from productmaster where id=" + req.params.id, function (data, err) {
@@ -532,7 +532,7 @@ router.post("/getProductDetailImage", (req, res, next) => {
         }
     });
 })
-router.post("/SaveWebBanners", (req, res, next) => {
+router.post("/SaveWebBanners", midway.checkToken,(req, res, next) => {
 
     db.executeSql("INSERT INTO `webbanners`(`name`,`bannersimage`,`status`,`title`,`subtitle`)VALUES('" + req.body.name + "','" + req.body.bannersimage + "'," + req.body.status + ",'" + req.body.title + "','" + req.body.subtitle + "');", function (data, err) {
         if (err) {
@@ -542,7 +542,7 @@ router.post("/SaveWebBanners", (req, res, next) => {
         }
     });
 });
-router.post("/UpdateActiveWebBanners", (req, res, next) => {
+router.post("/UpdateActiveWebBanners",midway.checkToken, (req, res, next) => {
     console.log(req.body)
     db.executeSql("UPDATE  `webbanners` SET status=" + req.body.status + " WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
@@ -552,7 +552,7 @@ router.post("/UpdateActiveWebBanners", (req, res, next) => {
         }
     });
 });
-router.post("/SaveMobileBanners", (req, res, next) => {
+router.post("/SaveMobileBanners", midway.checkToken,(req, res, next) => {
 
 
     db.executeSql("INSERT INTO `mobilebanners`(`name`,`bannersimage`,`status`)VALUES('" + req.body.name + "','" + req.body.bannersimage + "'," + req.body.status + ");", function (data, err) {
@@ -564,7 +564,7 @@ router.post("/SaveMobileBanners", (req, res, next) => {
         }
     });
 });
-router.post("/UpdateActiveMobileBanners", (req, res, next) => {
+router.post("/UpdateActiveMobileBanners", midway.checkToken,(req, res, next) => {
     console.log(req.body)
     db.executeSql("UPDATE  `mobilebanners` SET status=" + req.body.status + " WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
@@ -585,7 +585,7 @@ router.get("/GetMobileBanners", (req, res, next) => {
     });
 });
 
-router.post("/RemoveMobileBanners", (req, res, next) => {
+router.post("/RemoveMobileBanners",midway.checkToken, (req, res, next) => {
     console.log(req.body.id)
     db.executeSql("Delete from mobilebanners where id=" + req.body.id, function (data, err) {
         if (err) {
@@ -727,7 +727,7 @@ router.get("/GetWebBanners", (req, res, next) => {
     });
 });
 
-router.post("/RemoveWebBanners", (req, res, next) => {
+router.post("/RemoveWebBanners",midway.checkToken, (req, res, next) => {
     console.log(req.id)
     db.executeSql("Delete from webbanners where id=" + req.body.id, function (data, err) {
         if (err) {
@@ -738,7 +738,7 @@ router.post("/RemoveWebBanners", (req, res, next) => {
     });
 });
 
-router.post("/UploadProductImage", (req, res, next) => {
+router.post("/UploadProductImage",midway.checkToken, (req, res, next) => {
     var imgname = generateUUID();
 
     const storage = multer.diskStorage({
@@ -774,7 +774,7 @@ router.post("/UploadProductImage", (req, res, next) => {
     });
 });
 
-router.post("/UploadMultiProductImage", (req, res, next) => {
+router.post("/UploadMultiProductImage",midway.checkToken, (req, res, next) => {
     var imgname = generateUUID();
 
     const storage = multer.diskStorage({
@@ -810,7 +810,7 @@ router.post("/UploadMultiProductImage", (req, res, next) => {
 });
 
 
-router.get("/RemoveRecentUoloadImage", (req, res, next) => {
+router.get("/RemoveRecentUoloadImage",midway.checkToken, (req, res, next) => {
 
     db.executeSql("SELECT * FROM images ORDER BY createddate DESC LIMIT 1", function (data, err) {
         if (err) {
@@ -820,7 +820,7 @@ router.get("/RemoveRecentUoloadImage", (req, res, next) => {
         }
     });
 })
-router.post("/UploadCategoryBannersImage", (req, res, next) => {
+router.post("/UploadCategoryBannersImage",midway.checkToken, (req, res, next) => {
     console.log(req.body)
     var imgname = generateUUID();
 
@@ -856,7 +856,7 @@ router.post("/UploadCategoryBannersImage", (req, res, next) => {
         console.log("You have uploaded this image");
     });
 });
-router.post("/UploadBannersImage", (req, res, next) => {
+router.post("/UploadBannersImage",midway.checkToken, (req, res, next) => {
     var imgname = generateUUID();
 
     const storage = multer.diskStorage({
@@ -893,7 +893,7 @@ router.post("/UploadBannersImage", (req, res, next) => {
 });
 
 
-router.post("/UploadMobileBannersImage", (req, res, next) => {
+router.post("/UploadMobileBannersImage",midway.checkToken, (req, res, next) => {
     var imgname = generateUUID();
 
     const storage = multer.diskStorage({
@@ -929,7 +929,7 @@ router.post("/UploadMobileBannersImage", (req, res, next) => {
     });
 });
 
-router.post("/saveEmioption", (req, res, next) => {
+router.post("/saveEmioption",midway.checkToken, (req, res, next) => {
 
     for (let i = 0; i < req.body.length; i++) {
         db.executeSql("INSERT INTO  `emi`(`bankid`,`months`,`intrest`,`isactive`,`createddate`,`updateddate`)VALUES(" + req.body[i].bankid + "," + req.body[i].months + "," + req.body[i].intrest + ",true,CURRENT_TIMESTAMP,NULL);", function (data, err) {
@@ -948,7 +948,7 @@ router.post("/saveEmioption", (req, res, next) => {
 });
 
 //filter apis
-router.post("/addToNewArrivals", (req, res, next) => {
+router.post("/addToNewArrivals",midway.checkToken, (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
         db.executeSql("update  `productmaster` SET isNewArrival=true,isBestProduct=false,isHot=false,isOnSale=false where id=" + req.body[i].productId, function (data, err) {
             if (err) {
@@ -963,7 +963,7 @@ router.post("/addToNewArrivals", (req, res, next) => {
 
 });
 
-router.post("/addToBestProduct", (req, res, next) => {
+router.post("/addToBestProduct",midway.checkToken, (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
         db.executeSql("update productmaster SET isNewArrival=false,isBestProduct=true,isHot=false,isOnSale=false where id=" + req.body[i].productId, function (data, err) {
             if (err) {
@@ -977,7 +977,7 @@ router.post("/addToBestProduct", (req, res, next) => {
     res.json("success");
 
 });
-router.post("/addToHotProduct", (req, res, next) => {
+router.post("/addToHotProduct",midway.checkToken, (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
         db.executeSql("update  `productmaster` SET isNewArrival=false,isBestProduct=false,isHot=true,isOnSale=false where id=" + req.body[i].productId, function (data, err) {
             if (err) {
@@ -991,7 +991,7 @@ router.post("/addToHotProduct", (req, res, next) => {
     res.json("success");
 
 });
-router.post("/addToOnSale", (req, res, next) => {
+router.post("/addToOnSale",midway.checkToken, (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
         db.executeSql("update  `productmaster` SET isNewArrival=false,isBestProduct=false,isHot=false,isOnSale=true where id=" + req.body[i].productId, function (data, err) {
             if (err) {

@@ -25,7 +25,7 @@ router.post("/SaveUserRegister", (req, res, next) => {
 
 });
 
-router.post("/SaveAddress", (req, res, next) => {
+router.post("/SaveAddress",midway.checkToken, (req, res, next) => {
 
     // console.log(req.body);
     db.executeSql("INSERT INTO `useraddress`(`userid`,`name`,`contactnumber`,`pincode`,`locality`,`address`,`city`,`state`,`landmark`,`alternativeno`,`createddate`)VALUES(" + req.body.userid + ",'" + req.body.name + "'," + req.body.contactnumber + "," + req.body.pincode + ",'" + req.body.locality + "','" + req.body.address + "','" + req.body.city + "','" + req.body.state + "','" + req.body.landmark + "'," + req.body.alternativeno + ",CURRENT_TIMESTAMP);", function (data, err) {
@@ -37,7 +37,7 @@ router.post("/SaveAddress", (req, res, next) => {
     });
 
 });
-router.post("/RemoveUserAddress", (req, res, next) => {
+router.post("/RemoveUserAddress", midway.checkToken,(req, res, next) => {
     db.executeSql("Delete from useraddress where id=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -47,7 +47,7 @@ router.post("/RemoveUserAddress", (req, res, next) => {
     });
 });
 
-router.post("/UpdateUserAddress", (req, res, next) => {
+router.post("/UpdateUserAddress",midway.checkToken, (req, res, next) => {
     // console.log(req.body)
     db.executeSql("UPDATE `useraddress` SET name='" + req.body.name + "',contactnumber=" + req.body.contactnumber + ",pincode=" + req.body.pincode + ",locality='" + req.body.locality + "',address='" + req.body.address + "',city='" + req.body.city + "',landmark='" + req.body.landmark + "',alternativeno=" + req.body.alternativeno + ",updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
@@ -59,7 +59,7 @@ router.post("/UpdateUserAddress", (req, res, next) => {
 });
 
 
-router.get("/GetUserAddress/:id", (req, res, next) => {
+router.get("/GetUserAddress/:id",midway.checkToken, (req, res, next) => {
 
     db.executeSql("select * from useraddress where userid =" + req.params.id, function (data, err) {
         if (err) {
@@ -70,7 +70,7 @@ router.get("/GetUserAddress/:id", (req, res, next) => {
     });
 });
 
-router.post("/getOrdersForDashboard", (req, res, next) => {
+router.post("/getOrdersForDashboard",midway.checkToken, (req, res, next) => {
     db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as productId,p.maintag,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale from orders o join productmaster p on o.productid=p.id where o.userid=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -95,7 +95,7 @@ router.post("/getOrdersForDashboard", (req, res, next) => {
 });
 
 
-router.post("/saveAddToCart", (req, res, next) => {
+router.post("/saveAddToCart",(req, res, next) => {
     console.log(req.body[0].product[0].product.productId);
     db.executeSql("INSERT INTO `cartlist`(`userid`,`productid`,`quantity`,`createddate`)VALUES('" + req.body[0].userid + "'," + req.body[0].product[0].product.productId + "," + req.body[0].quantity + ",CURRENT_TIMESTAMP);", function (data, err) {
         if (err) {
@@ -106,7 +106,7 @@ router.post("/saveAddToCart", (req, res, next) => {
     });
 
 });
-router.post("/UpdateCartDetails", (req, res, next) => {
+router.post("/UpdateCartDetails",(req, res, next) => {
     db.executeSql("UPDATE `cartlist` SET quantity=" + req.body.quantity + ",updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -116,7 +116,7 @@ router.post("/UpdateCartDetails", (req, res, next) => {
     });
 });
 
-router.post("/saveToWishList", (req, res, next) => {
+router.post("/saveToWishList",midway.checkToken, (req, res, next) => {
     console.log(req.body, 'Wishlist')
     db.executeSql("INSERT INTO `wishlist`(`userid`,`productid`)VALUES(" + req.body.userid + "," + req.body.id + ");", function (data, err) {
         if (err) {
@@ -127,7 +127,7 @@ router.post("/saveToWishList", (req, res, next) => {
     });
 
 });
-router.post("/saveUserOrders", (req, res, next) => {
+router.post("/saveUserOrders",midway.checkToken, (req, res, next) => {
     // console.log(req.body)
     if (req.body.productid.length == 1) {
         req.body.parentid = 0;
@@ -378,7 +378,8 @@ router.get("/GetBestProduct", (req, res, next) => {
                     });
                 });
             }else{
-                res.json('empty')
+                let test=[];
+                res.json(test);
             }
         }
     });
@@ -406,7 +407,8 @@ router.get("/GetNewArrivalProduct", (req, res, next) => {
                 });
             }
             else{
-                res.json('empty');
+                let test=[];
+                res.json(test);
             }
         }
     });
@@ -432,7 +434,8 @@ router.get("/GetSaleProduct", (req, res, next) => {
                     });
                 });
             }else{
-                res.json('empty');
+                let test=[];
+                res.json(test);
             }
         }
     });
@@ -459,12 +462,13 @@ router.get("/GetHotProduct", (req, res, next) => {
                 });
             }
             else{
-                res.json('empty');
+                let test=[];
+                res.json(test);
             }
         }
     });
 });
-router.post("/SaveMainCategory", (req, res, next) => {
+router.post("/SaveMainCategory", midway.checkToken,(req, res, next) => {
     console.log(req.body.name);
     db.executeSql("INSERT INTO `category`(`name`,`parent`,`createddate`,`updateddate`,`isactive`)VALUES('" + req.body.name + "'," + req.body.parent + ",CURRENT_TIMESTAMP,CURRENT_TIMESTAMP," + req.body.isactive + ");", function (data, err) {
         if (err) {
@@ -475,7 +479,7 @@ router.post("/SaveMainCategory", (req, res, next) => {
     });
 });
 
-router.get("/RemoveCartList/:id", (req, res, next) => {
+router.get("/RemoveCartList/:id",  (req, res, next) => {
     db.executeSql("Delete from cartlist where id=" + req.params.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -484,7 +488,7 @@ router.get("/RemoveCartList/:id", (req, res, next) => {
         }
     });
 });
-router.get("/RemoveWishList/:id", (req, res, next) => {
+router.get("/RemoveWishList/:id", midway.checkToken, (req, res, next) => {
     db.executeSql("Delete from wishlist where id=" + req.params.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -493,7 +497,7 @@ router.get("/RemoveWishList/:id", (req, res, next) => {
         }
     });
 });
-router.post("/SaveBankListCategory", (req, res, next) => {
+router.post("/SaveBankListCategory", midway.checkToken, (req, res, next) => {
     console.log(req.body.name);
     db.executeSql("INSERT INTO `banklist`(`bankname`)VALUES('" + req.body.bankname + "');", function (data, err) {
         if (err) {

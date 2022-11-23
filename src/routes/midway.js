@@ -13,36 +13,39 @@ let checkToken = (req, res, next) => {
   if (token) {
     jwt.verify(token, 'prnv', (err, decoded) => {
       if (err) {
-         console.log("erroe here");
-        return res.json({
-          success: false,
-          message: 'Token is not valid'
-        });
-      } 
-      else {
-        if(user.user !=  undefined){
-          if((user.user.username == decoded.username)&&(user.user.password == decoded.password)){
-            req.decoded = decoded;
-            next();
-          }
-        }
-        else{
-          // console.log("ornv")
-          // if((user1.user1.username == decoded.username)&&(user1.user1.password == decoded.password)){
-            req.decoded = decoded;
-            next();
-          // }
-        }
-        
+        console.log("erroe here");
+       //  res.json({ status: 401, error: { message: 'Unauthorised' } });
+        let err = new Error('unautherize');
+         err.status = 401;
+         throw err;
        
+       
+       // res.json({
+       //   success: false,
+       //   message: 'Token is not valid'
+       // });
+     } 
+     else {
+      if(user.user !=  undefined){
+        if((user.user.username == decoded.username)&&(user.user.password == decoded.password)){
+          req.decoded = decoded;
+          next();
+        }
       }
+      else{
+        // console.log("ornv")
+        // if((user1.user1.username == decoded.username)&&(user1.user1.password == decoded.password)){
+          req.decoded = decoded;
+          next();
+        // }
+      } 
+    }
     });
-  } else {
+  }  else {
     console.log("erroe here123");
-    return res.json({
-      success: false,
-      message: 'Auth token is not supplied'
-    });
+    let err = new Error('noToken');
+          err.status = 111;
+          throw err;
   }
 };
 
