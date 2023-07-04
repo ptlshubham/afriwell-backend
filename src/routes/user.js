@@ -78,7 +78,7 @@ router.post("/getOrdersForDashboard",midway.checkToken, (req, res, next) => {
             // return res.json(data);
             if (data.length > 0) {
                 data.forEach((element, ind) => {
-                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                    db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -96,8 +96,9 @@ router.post("/getOrdersForDashboard",midway.checkToken, (req, res, next) => {
 
 
 router.post("/saveAddToCart",(req, res, next) => {
-    console.log(req.body[0].product[0].product.productId);
-    db.executeSql("INSERT INTO `cartlist`(`userid`,`productid`,`quantity`,`createddate`)VALUES('" + req.body[0].userid + "'," + req.body[0].product[0].product.productId + "," + req.body[0].quantity + ",CURRENT_TIMESTAMP);", function (data, err) {
+    console.log("ssssddddddsdsdsdsdsd");
+    console.log(req.body);
+    db.executeSql("INSERT INTO `cartlist`(`userid`,`productid`,`quantity`,`createddate`)VALUES('" + req.body[0].userid + "'," + req.body[0].product.productId + "," + req.body[0].quantity + ",CURRENT_TIMESTAMP);", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -231,7 +232,7 @@ router.get("/GetProductList", (req, res, next) => {
         } else {
             if (data.length > 0) {
                 data.forEach((element, ind) => {
-                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                    db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -255,7 +256,7 @@ router.post("/GetSimilarProductList", (req, res, next) => {
         } else {
             if (data.length > 0) {
                 data.forEach((element, ind) => {
-                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                    db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -290,10 +291,28 @@ router.get("/GetCategoryList/:id", (req, res, next) => {
         }
     });
 });
+router.get("/getCatForCategoriesComponent/:id", (req, res, next) => {
+
+    db.executeSql("select * from category where isactive=1 AND id =" + req.params.id, function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+           db.executeSql("select * from category where isactive=1 AND parent="+data[0].parent,function(data1,err){
+            if(err){
+                console.log(err);
+            }else{
+                console.log(data1);
+                res.json(data1)
+            }
+           })
+        }
+    });
+});
+
 router.get("/GetProductImages/:id", (req, res, next) => {
     console.log("images from here");
     console.log(req.params.id)
-    db.executeSql("select * from images where productid=" + req.params.id, function (data, err) {
+    db.executeSql("select * from images where maintag=" + req.params.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -310,7 +329,7 @@ router.get("/GetCartList/:id", (req, res, next) => {
             if (data.length > 0) {
                 console.log(data)
                 data.forEach((element, ind) => {
-                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                    db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -343,7 +362,7 @@ router.get("/GetProductDetails/:id", (req, res, next) => {
         } else {
             if (data.length > 0) {
                 data.forEach((element, ind) => {
-                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                    db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -366,7 +385,7 @@ router.get("/GetBestProduct", (req, res, next) => {
         } else {
             if (data.length > 0) {
                 data.forEach((element, ind) => {
-                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                    db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -394,7 +413,7 @@ router.get("/GetNewArrivalProduct", (req, res, next) => {
         } else {
             if (data.length > 0) {
                 data.forEach((element, ind) => {
-                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                    db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -422,7 +441,7 @@ router.get("/GetSaleProduct", (req, res, next) => {
         } else {
             if (data.length > 0) {
                 data.forEach((element, ind) => {
-                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                    db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -449,7 +468,7 @@ router.get("/GetHotProduct", (req, res, next) => {
         } else {
             if (data.length > 0) {
                 data.forEach((element, ind) => {
-                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                    db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -659,7 +678,7 @@ router.post("/GetNavbarRoutedProducts", (req, res, next) => {
                 // console.log(data);
                 if (data.length > 0) {
                     data.forEach((element, ind) => {
-                        db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                        db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
@@ -681,7 +700,7 @@ router.post("/GetNavbarRoutedProducts", (req, res, next) => {
             } else {
                 if (data.length > 0) {
                     data.forEach((element, ind) => {
-                        db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                        db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {

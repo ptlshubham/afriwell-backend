@@ -96,7 +96,7 @@ router.post("/GetOrdersList", midway.checkToken,(req, res, next) => {
         } else {
             if (data.length > 0) {
                 data.forEach((element, ind) => {
-                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                    db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -278,7 +278,7 @@ router.get("/GetProductList", (req, res, next) => {
             // return res.json(data);
             if (data.length > 0) {
                 data.forEach((element, ind) => {
-                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                    db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -328,8 +328,8 @@ router.get("/GetProductMasterTag", (req, res, next) => {
 });
 
 router.post("/SaveAddProducts",midway.checkToken, (req, res, next) => {
-    console.log(req.body)
-    if (req.body.id == undefined || req.body.id == null) {
+    // console.log(req.body)
+    if (req.body.productId == undefined || req.body.productId == null) {
         for (let i = 0; i < req.body.selectedSize.length; i++) {
             db.executeSql("INSERT INTO `productmaster`(`maintag`,`mainCategory`, `category`, `subCategory`, `productName`, `brandName`, `manufacturerName`, `productCode`, `productSRNumber`, `productPrice`, `productPer`, `discountPrice`, `quantity`, `size`, `color`, `descripition`, `productDimension`, `itemWeight`, `taxslab`, `emiOptions`, `avibilityStatus`, `relatedProduct`,`startRating`, `isActive`, `createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productName + "','" + req.body.brandName + "','" + req.body.manufacturerName + "','" + req.body.productCode + "','" + req.body.productSRNumber + "','" + req.body.selectedSize[i].mainPrice + "','" + req.body.selectedSize[i].discountPerc + "','" + req.body.selectedSize[i].discountPrice + "','" + req.body.selectedSize[i].quantity + "','" + req.body.selectedSize[i].selsize + "','" + req.body.selectedSize[i].color + "','" + req.body.descripition + "','" + req.body.productSize + "','" + req.body.itemWeight + "','" + req.body.taxslab + "'," + req.body.emiOptions + "," + req.body.avibilityStatus + "," + req.body.relatedProduct + "," + req.body.startRating + "," + req.body.isActive + ",CURRENT_TIMESTAMP);", function (data, err) {
                 if (err) {
@@ -337,8 +337,7 @@ router.post("/SaveAddProducts",midway.checkToken, (req, res, next) => {
                 } else {
                     if (req.body.multi.length > 0) {
                         for (let i = 0; i < req.body.multi.length; i++) {
-
-                            db.executeSql("INSERT INTO `images`(`productid`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
+                            db.executeSql("INSERT INTO `images`(`maintag`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i].productListImage + "',CURRENT_TIMESTAMP);", function (data, err) {
                                 if (err) {
                                     console.log("Error in store.js", err);
                                 } else {
@@ -352,8 +351,6 @@ router.post("/SaveAddProducts",midway.checkToken, (req, res, next) => {
                 }
             })
         }
-
-
     }
     else {
         console.log("in update");
@@ -361,23 +358,20 @@ router.post("/SaveAddProducts",midway.checkToken, (req, res, next) => {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                if (req.body.productMainImage.length > 0) {
-                    db.executeSql("delete from images where productid=" + req.body.maintag, function (data1, err) {
-                        for (let i = 0; i < req.body.productMainImage.length; i++) {
-                            db.executeSql("INSERT INTO `images`(`productid`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productMainImage[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
+                if (req.body.multi.length > 0) {
+                        for (let i = 0; i < req.body.multi.length; i++) {
+                            db.executeSql("INSERT INTO `images`(`maintag`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i].productListImage + "',CURRENT_TIMESTAMP);", function (data, err) {
                                 if (err) {
                                     console.log("Error in store.js", err);
                                 } else {
-                                    if (i == (req.body.productMainImage.length - 1)) {
+                                    if (i == (req.body.multi.length - 1)) {
                                         res.json("success");
                                     }
                                 }
                             });
                         }
-                    })
+                   
                 }
-
-
             }
         });
     }
@@ -404,7 +398,7 @@ router.post("/SaveBulkProductsImages",midway.checkToken, (req, res, next) => {
 
     for (let i = 0; i < req.body.multi.length; i++) {
         console.log(req.body.multi, 'im in multi')
-        db.executeSql("INSERT INTO `images`(`productid`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
+        db.executeSql("INSERT INTO `images`(`maintag`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
@@ -524,7 +518,7 @@ router.post("/SaveAdminRegister", (req, res, next) => {
     });
 });
 router.post("/getProductDetailImage", (req, res, next) => {
-    db.executeSql("select * from images where productid=" + req.body.id, function (data, err) {
+    db.executeSql("select * from images where maintag=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -606,7 +600,7 @@ router.post("/getFilterProductList", (req, res, next) => {
             // return res.json(data);
             if (data.length > 0) {
                 data.forEach((element, ind) => {
-                    db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                    db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -630,7 +624,7 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
             } else {
                 if (data.length > 0) {
                     data.forEach((element, ind) => {
-                        db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                        db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
@@ -652,7 +646,7 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
             } else {
                 if (data.length > 0) {
                     data.forEach((element, ind) => {
-                        db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                        db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
@@ -674,7 +668,7 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
             } else {
                 if (data.length > 0) {
                     data.forEach((element, ind) => {
-                        db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                        db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
@@ -696,7 +690,7 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
             } else {
                 if (data.length > 0) {
                     data.forEach((element, ind) => {
-                        db.executeSql("select * from images where productid=" + element.maintag, function (data1, err) {
+                        db.executeSql("select * from images where maintag=" + element.maintag, function (data1, err) {
                             if (err) {
                                 console.log("Error in store.js", err);
                             } else {
