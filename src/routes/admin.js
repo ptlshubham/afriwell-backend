@@ -89,8 +89,8 @@ router.get("/GetROIList",midway.checkToken, (req, res, next) => {
 });
 
 router.post("/GetOrdersList", midway.checkToken,(req, res, next) => {
-    // console.log('ygyguhguft');
-    db.executeSql("select o.id,p.maintag,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition, ad.address ,ad.city,ad.state,ad.pincode,ad.contactnumber from orders o inner join productmaster p on o.productid=p.id inner join useraddress ad on ad.id = o.addressid where o.status='" + req.body.status + "';", function (data, err) {
+    console.log(req.body);
+    db.executeSql("select o.id,p.maintag,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition, ad.address ,ad.city,ad.state,ad.pincode,ad.contactnumber,ad.email from orders o inner join productmaster p on o.productid=p.id  join useraddress ad on ad.id = o.addressid where o.status='" + req.body.status + "';", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -214,8 +214,7 @@ router.post("/UpdateCategory",midway.checkToken, (req, res, next) => {
 });
 
 router.post("/UpdateOrdersStatus",midway.checkToken, (req, res, next) => {
-    console.log('accept');
-
+    
     db.executeSql("UPDATE  `orders` SET status='" + req.body.status + "' WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -271,7 +270,7 @@ router.get("/GetProductList", (req, res, next) => {
     //     }
     // });
 
-    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category ", function (data, err) {
+    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name as cat_name from productmaster p join category c on c.id = p.category ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -379,7 +378,6 @@ router.post("/SaveAddProducts",midway.checkToken, (req, res, next) => {
 });
 
 router.post("/SaveBulkProductsUpload",midway.checkToken, (req, res, next) => {
-    console.log(req.body)
     for (let i = 0; i < req.body.length; i++) {
         db.executeSql("INSERT INTO `productmaster`(`maintag`,`mainCategory`, `category`, `subCategory`, `productName`, `brandName`, `manufacturerName`, `productCode`, `productSRNumber`, `productPrice`, `productPer`, `discountPrice`, `quantity`, `size`, `color`, `descripition`, `productDimension`, `itemWeight`, `taxslab`, `emiOptions`, `avibilityStatus`, `relatedProduct`,`startRating`, `isActive`, `createddate`)VALUES(" + req.body[i].maintag + "," + req.body[i].mainCategory + "," + req.body[i].category + "," + req.body[i].subCategory + ",'" + req.body[i].productName + "','" + req.body[i].brandName + "','" + req.body[i].manufacturerName + "','" + req.body[i].productCode + "','" + req.body[i].productSRNumber + "'," + req.body[i].productPrice + "," + req.body[i].productPer + "," + req.body[i].discountPrice + "," + req.body[i].quantity + ",'" + req.body[i].size + "','" + req.body[i].color + "','" + req.body[i].descripition + "','" + req.body[i].productDimension + "','" + req.body[i].itemWeight + "'," + req.body[i].taxslab + "," + req.body[i].emiOptions + "," + req.body[i].avibilityStatus + "," + req.body[i].relatedProduct + "," + req.body[i].startRating + ",false,CURRENT_TIMESTAMP);", function (data, err) {
             if (err) {
@@ -394,10 +392,7 @@ router.post("/SaveBulkProductsUpload",midway.checkToken, (req, res, next) => {
 
 });
 router.post("/SaveBulkProductsImages",midway.checkToken, (req, res, next) => {
-    console.log("here saving");
-
     for (let i = 0; i < req.body.multi.length; i++) {
-        console.log(req.body.multi, 'im in multi')
         db.executeSql("INSERT INTO `images`(`maintag`,`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.maintag + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
@@ -422,7 +417,6 @@ router.post("/AddRestockQuantity",midway.checkToken, (req, res, next) => {
     })
 });
 router.post("/UpdateReviews",midway.checkToken, (req, res, next) => {
-    console.log(req.body)
     db.executeSql("UPDATE  `ratings` SET rating=" + req.body.rating + ",comment='" + req.body.comment + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -462,47 +456,6 @@ router.get("/RemoveProduct/:id",midway.checkToken, (req, res, next) => {
     });
 })
 
-let secret = 'prnv';
-router.post('/login', function (req, res, next) {
-    console.log("ggggggg");
-    const body = req.body;
-    console.log(body);
-    var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
-    var repass = salt + '' + body.password;
-    var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
-    db.executeSql("select * from admin where email='" + req.body.email + "';", function (data, err) {
-        console.log(data);
-        if (data.length > 0) {
-            db.executeSql("select * from admin where email='" + req.body.email + "' and password='" + encPassword + "';", function (data1, err) {
-                console.log(data1);
-                if (data1.length > 0) {
-
-                    module.exports.user1 = {
-                        username: data1[0].email, password: data1[0].password
-                    }
-                    let token = jwt.sign({ username: data1[0].email, password: data1[0].password },
-                        secret,
-                        {
-                            expiresIn: '1h' // expires in 24 hours
-                        }
-                    );
-                    console.log("token=", token);
-                    data[0].token = token;
-
-                    res.cookie('auth', token);
-                    res.json(data);
-                }
-                else {
-                    return res.json(2);
-                }
-            });
-        }
-        else {
-            return res.json(1);
-        }
-    });
-
-});
 
 router.post("/SaveAdminRegister", (req, res, next) => {
     console.log("vdfvfvfv");
@@ -559,7 +512,6 @@ router.post("/SaveMobileBanners", midway.checkToken,(req, res, next) => {
     });
 });
 router.post("/UpdateActiveMobileBanners", midway.checkToken,(req, res, next) => {
-    console.log(req.body)
     db.executeSql("UPDATE  `mobilebanners` SET status=" + req.body.status + " WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -593,7 +545,7 @@ router.post("/RemoveMobileBanners",midway.checkToken, (req, res, next) => {
 
 router.post("/getFilterProductList", (req, res, next) => {
 
-    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.mainCategory=" + req.body.maincatid + " OR p.category=" + req.body.catid + " OR p.subCategory=" + req.body.subid + ";", function (data, err) {
+    db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name as cat_name from productmaster p join category c on c.id = p.category where p.mainCategory=" + req.body.maincatid + " OR p.category=" + req.body.catid + " OR p.subCategory=" + req.body.subid + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -618,7 +570,7 @@ router.post("/getFilterProductList", (req, res, next) => {
 });
 router.post("/GetAllFilterProduct", (req, res, next) => {
     if (req.body.filter == 'hot') {
-        db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.isHot=1", function (data, err) {
+        db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name as cat_name from productmaster p join category c on c.id = p.category where p.isHot=1", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
@@ -640,7 +592,7 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
         });
     }
     else if (req.body.filter == 'best') {
-        db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.isBestProduct=1", function (data, err) {
+        db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name as cat_name from productmaster p join category c on c.id = p.category where p.isBestProduct=1", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
@@ -662,7 +614,7 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
         });
     }
     else if (req.body.filter == 'sale') {
-        db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.isOnSale=1", function (data, err) {
+        db.executeSql("select p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name as cat_name from productmaster p join category c on c.id = p.category where p.isOnSale=1", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
@@ -684,7 +636,7 @@ router.post("/GetAllFilterProduct", (req, res, next) => {
         });
     }
     else {
-        db.executeSql("sselect p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name from productmaster p join category c on c.id = p.category where p.isNewArrival=1", function (data, err) {
+        db.executeSql("sselect p.id as productId, p.maintag,p.mainCategory,p.category,p.subCategory, p.productName,p.brandName,p.manufacturerName,p.productCode,p.productSRNumber,p.productPrice,p.productPer,p.discountPrice,p.quantity,p.soldQuantity,p.size,p.color,p.descripition,p.productDimension,p.itemWeight,p.taxslab,p.emiOptions,p.avibilityStatus,p.relatedProduct,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,p.startRating,p.isActive,c.id as catId,c.name as cat_name from productmaster p join category c on c.id = p.category where p.isNewArrival=1", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
